@@ -1,0 +1,14 @@
+{
+  "name": "Backflow Prevention Testing",
+  "date": "2026-03-08",
+  "verdict": "pursue",
+  "market": "Twin Cities, MN",
+  "notes": "City-mandated annual testing, high volume of commercial accounts, simple certification path",
+  "phases": {
+    "research": "01-research.pdf",
+    "sales-team": "02-sales-team.pdf",
+    "hormozi": "03-hormozi.pdf",
+    "customer-acquisition": null,
+    "challenger-sale": null
+  }
+}

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Research Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0e0f;
+    --surface: #141516;
+    --surface2: #1c1d1f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8e6e1;
+    --muted: #6b6963;
+    --muted2: #9a9890;
+    --pursue: #2ecc71;
+    --pursue-bg: rgba(46,204,113,0.1);
+    --nogo: #e74c3c;
+    --nogo-bg: rgba(231,76,60,0.1);
+    --accent: #f0c040;
+    --accent-bg: rgba(240,192,64,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 52px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    color: var(--text);
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    height: calc(100vh - 52px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .sidebar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 4px 8px 8px;
+    text-transform: uppercase;
+  }
+  .biz-card {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: transparent;
+  }
+  .biz-card:hover { background: var(--surface); border-color: var(--border); }
+  .biz-card.active { background: var(--surface2); border-color: var(--border2); }
+  .biz-card-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .biz-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .biz-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .verdict-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+  .verdict-pursue { background: var(--pursue-bg); color: var(--pursue); }
+  .verdict-nogo { background: var(--nogo-bg); color: var(--nogo); }
+  .progress-bar {
+    margin-top: 8px;
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--pursue);
+    transition: width 0.3s ease;
+  }
+  .progress-fill.nogo { background: var(--nogo); }
+
+  /* ── MAIN PANEL ── */
+  .main {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .main-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    gap: 12px;
+  }
+  .main-empty-icon {
+    font-size: 32px;
+    opacity: 0.3;
+  }
+  .main-empty-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── BUSINESS HEADER ── */
+  .biz-header {
+    padding: 28px 32px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .biz-header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .biz-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .biz-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .biz-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .biz-meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .biz-meta-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted2);
+  }
+  .biz-notes {
+    font-size: 13px;
+    color: var(--muted2);
+    line-height: 1.6;
+    max-width: 640px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border-radius: 6px;
+    border-left: 2px solid var(--accent);
+  }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-cell {
+    padding: 18px 24px;
+    background: var(--bg);
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── PHASES ── */
+  .phases-section { padding: 24px 32px; }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .phases-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .phase-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: all 0.15s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+  .phase-row.done { border-color: var(--border2); }
+  .phase-row.done:hover { background: var(--surface2); border-color: rgba(255,255,255,0.18); }
+  .phase-row.pending { opacity: 0.5; cursor: default; }
+  .phase-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    width: 20px;
+    flex-shrink: 0;
+  }
+  .phase-status {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 10px;
+    transition: all 0.15s;
+  }
+  .phase-status.done {
+    background: var(--pursue-bg);
+    border-color: var(--pursue);
+    color: var(--pursue);
+  }
+  .phase-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    flex: 1;
+  }
+  .phase-file {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .phase-open-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    padding: 4px 12px;
+    border: 1px solid rgba(240,192,64,0.25);
+    border-radius: 20px;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .phase-open-btn:hover { background: var(--accent-bg); }
+  .phase-pending-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 680px) {
+    .layout {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      height: auto;
+      min-height: calc(100vh - 52px);
+    }
+    .sidebar {
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      height: auto;
+      max-height: 280px;
+      padding: 12px 8px;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 8px;
+    }
+    .sidebar-label { display: none; }
+    .biz-card {
+      min-width: 180px;
+      flex-shrink: 0;
+    }
+    .main { min-height: 400px; }
+    .biz-header { padding: 20px 16px 16px; }
+    .biz-title { font-size: 18px; }
+    .phases-section { padding: 16px; }
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+    .stat-cell { padding: 14px 12px; }
+    .stat-num { font-size: 22px; }
+    .phase-row { padding: 12px 14px; gap: 12px; }
+    .phase-file { display: none; }
+    .biz-header-top { flex-direction: column; gap: 10px; }
+    .biz-meta-row { gap: 12px; }
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo">Research<span>Hub</span></div>
+  <div class="nav-meta" id="nav-meta">Loading...</div>
+</nav>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main" id="main">
+    <div class="main-empty">
+      <div class="main-empty-icon">◎</div>
+      <div class="main-empty-text">Select a business</div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// CONFIGURATION — add new businesses here
+// ─────────────────────────────────────────────
+const BUSINESSES = [
+  'fire-pump-flow-testing',
+  'aerial-lift-inspection',
+  'backflow-prevention-testing',
+  // Add new business folder names here as you create them
+];
+
+const PHASE_LABELS = {
+  'research':             'Business Research Report',
+  'sales-team':           'Sales Team Intelligence',
+  'hormozi':              'Hormozi Framework Analysis',
+  'customer-acquisition': 'Customer Acquisition Plan',
+  'challenger-sale':      'Challenger Sale Playbook',
+};
+
+// ─────────────────────────────────────────────
+// LOAD DATA
+// ─────────────────────────────────────────────
+let businesses = [];
+let selected = null;
+
+async function loadAll() {
+  const results = await Promise.all(
+    BUSINESSES.map(id =>
+      fetch(`businesses/${id}/meta.json`)
+        .then(r => r.json())
+        .then(data => ({ id, ...data }))
+        .catch(() => null)
+    )
+  );
+  businesses = results.filter(Boolean).sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  const total = businesses.length;
+  const pursuing = businesses.filter(b => b.verdict === 'pursue').length;
+  document.getElementById('nav-meta').textContent =
+    `${total} businesses · ${pursuing} pursuing · Twin Cities`;
+
+  renderSidebar();
+  if (businesses.length > 0) selectBusiness(businesses[0].id);
+}
+
+// ─────────────────────────────────────────────
+// SIDEBAR
+// ─────────────────────────────────────────────
+function renderSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const label = `<div class="sidebar-label">All Businesses</div>`;
+  const cards = businesses.map(b => {
+    const phases = Object.values(b.phases);
+    const done = phases.filter(Boolean).length;
+    const total = phases.length;
+    const pct = Math.round(done / total * 100);
+    return `
+      <div class="biz-card ${selected === b.id ? 'active' : ''}" onclick="selectBusiness('${b.id}')">
+        <div class="biz-card-name">${b.name}</div>
+        <div class="biz-card-row">
+          <div class="biz-date">${formatDate(b.date)}</div>
+          <div class="verdict-badge verdict-${b.verdict}">${b.verdict === 'pursue' ? 'Pursue' : 'No-Go'}</div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill ${b.verdict === 'nogo' ? 'nogo' : ''}" style="width:${pct}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  sidebar.innerHTML = label + cards;
+}
+
+// ─────────────────────────────────────────────
+// MAIN PANEL
+// ─────────────────────────────────────────────
+function selectBusiness(id) {
+  selected = id;
+  renderSidebar();
+  const b = businesses.find(x => x.id === id);
+  if (!b) return;
+
+  const phases = Object.entries(b.phases);
+  const done = phases.filter(([, f]) => f).length;
+  const total = phases.length;
+  const pct = Math.round(done / total * 100);
+
+  const phaseRows = phases.map(([key, file], i) => {
+    const label = PHASE_LABELS[key] || key;
+    if (file) {
+      return `
+        <a class="phase-row done" href="businesses/${b.id}/${file}" target="_blank">
+          <div class="phase-num">0${i + 1}</div>
+          <div class="phase-status done">✓</div>
+          <div class="phase-name">${label}</div>
+          <div class="phase-file">${file}</div>
+          <div class="phase-open-btn">Open PDF ↗</div>
+        </a>
+      `;
+    } else {
+      return `
+        <div class="phase-row pending">
+          <div class="phase-num">0${i + 1}</div>
+          <div class="phase-status"></div>
+          <div class="phase-name">${label}</div>
+          <div class="phase-pending-label">Not yet run</div>
+        </div>
+      `;
+    }
+  }).join('');
+
+  document.getElementById('main').innerHTML = `
+    <div class="biz-header">
+      <div class="biz-header-top">
+        <div class="biz-title">${b.name}</div>
+        <div class="verdict-badge verdict-${b.verdict}" style="font-size:11px;padding:4px 14px;flex-shrink:0">
+          ${b.verdict === 'pursue' ? '↑ Pursue Immediately' : '✕ No-Go'}
+        </div>
+      </div>
+      <div class="biz-meta-row">
+        <div class="biz-meta-item">
+          <div class="biz-meta-label">Market</div>
+          <div class="biz-meta-value">${b.market}</div>
+        </div>
+        <div class="biz-meta-item">
+          <div class="biz-meta-label">Researched</div>
+          <div class="biz-meta-value">${formatDate(b.date)}</div>
+        </div>
+        <div class="biz-meta-item">
+          <div class="biz-meta-label">Progress</div>
+          <div class="biz-meta-value">${done}/${total} phases</div>
+        </div>
+      </div>
+      ${b.notes ? `<div class="biz-notes">${b.notes}</div>` : ''}
+    </div>
+    <div class="stats-row">
+      <div class="stat-cell">
+        <div class="stat-num">${done}</div>
+        <div class="stat-label">Done</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">${total - done}</div>
+        <div class="stat-label">Remaining</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">${pct}%</div>
+        <div class="stat-label">Complete</div>
+      </div>
+    </div>
+    <div class="phases-section">
+      <div class="section-label">Research Phases</div>
+      <div class="phases-grid">${phaseRows}</div>
+    </div>
+  `;
+}
+
+function formatDate(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+loadAll();
+</script>
+</body>
+</html>
