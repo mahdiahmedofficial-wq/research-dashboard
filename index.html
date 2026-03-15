@@ -328,6 +328,49 @@ body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
   .stat-num{font-size:22px;} .stat-cell{padding:12px 8px;}
   .open-btn{padding:5px 10px;font-size:8px;}
 }
+
+/* ── REVIEW PANEL CONTENT ── */
+.review-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:14px;}
+.review-error{padding:24px;color:var(--nogo);font-family:'Space Mono',monospace;font-size:11px;line-height:1.8;}
+.review-content{padding:24px 28px;}
+.rv-h1{font-size:17px;font-weight:700;color:var(--purple);margin:20px 0 8px;font-family:'Space Grotesk',sans-serif;}
+.rv-h2{font-size:13px;font-weight:600;color:var(--gold);margin:14px 0 5px;font-family:'Space Grotesk',sans-serif;}
+.rv-h3{font-size:12px;font-weight:600;color:var(--text);margin:10px 0 4px;}
+.rv-p{font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:8px;}
+.review-content li{font-size:12px;color:var(--text2);line-height:1.7;margin-left:16px;margin-bottom:3px;}
+.review-content strong{color:var(--text);font-weight:600;}
+
+/* ── EDIT / PREVIEW TOGGLE ── */
+.rv-mode-btn{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;padding:4px 11px;border-radius:6px;border:1px solid var(--border2);
+  background:transparent;color:var(--text3);cursor:pointer;transition:all 0.15s;}
+.rv-mode-btn.active{background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd);}
+.rv-mode-btn:hover:not(.active){color:var(--text2);border-color:var(--border3);}
+
+/* ── RAW EDITOR ── */
+.rv-editor{width:100%;flex:1;background:rgba(8,10,20,0.9);border:none;outline:none;
+  font-family:'Space Mono',monospace;font-size:11px;color:var(--text2);line-height:1.7;
+  padding:20px 24px;resize:none;-webkit-overflow-scrolling:touch;}
+.rv-editor::selection{background:var(--purple-bg);}
+
+/* ── CHAT BAR ── */
+.rv-chat{flex-direction:column;border-top:1px solid var(--border);flex-shrink:0;}
+.rv-chat-history{max-height:180px;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px;}
+.rv-chat-msg{font-size:11px;line-height:1.6;padding:8px 12px;border-radius:8px;max-width:94%;}
+.rv-chat-user{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--text);align-self:flex-end;font-family:'Space Grotesk',sans-serif;}
+.rv-chat-assistant{background:var(--bg4);border:1px solid var(--border2);color:var(--text2);align-self:flex-start;font-family:'Space Grotesk',sans-serif;}
+.rv-chat-error{background:var(--nogo-bg);border:1px solid var(--nogo-bd);color:var(--nogo);font-family:'Space Mono',monospace;font-size:10px;align-self:flex-start;}
+.rv-chat-input-row{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--border);align-items:flex-end;}
+.rv-chat-textarea{flex:1;background:rgba(12,14,24,0.9);border:1px solid var(--border2);border-radius:8px;
+  padding:8px 12px;font-family:'Space Grotesk',sans-serif;font-size:12px;color:var(--text);
+  resize:none;outline:none;line-height:1.5;transition:border-color 0.15s;}
+.rv-chat-textarea:focus{border-color:var(--purple-bd);}
+.rv-chat-textarea::placeholder{color:var(--text3);}
+.rv-chat-send{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--gold);padding:8px 16px;border:1px solid var(--gold-bd);
+  border-radius:6px;background:var(--gold-bg);cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+.rv-chat-send:hover{background:rgba(245,200,66,0.16);}
+.rv-chat-send:disabled{opacity:0.4;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -456,6 +499,10 @@ body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
 
 <script>
 const BUSINESSES=['fire-pump-flow-testing','aerial-lift-inspection','backflow-prevention-testing'];
+
+// ── BACKEND URL — update after deploying to Railway ──
+const BACKEND_URL='research-hub-backend-production.up.railway.app';
+
 const TABS=[
   {id:'research',label:'Research',sublabel:null,isSales:false,reports:[
     {key:'research',name:'Business Research Report',desc:'Market overview · pricing · licensing · Go/No-Go verdict'}]},
@@ -504,76 +551,6 @@ const TABS=[
     {key:'revops',name:'RevOps',desc:'Lead lifecycle · MQL/SQL handoff · CRM automation'},
     {key:'churn-prevention',name:'Churn Prevention',desc:'Cancel flows · save offers · dunning · win-back'}]},
 ];
-let businesses=[],selectedId=null,activeTab='research';
-async function loadAll(){
-  const results=await Promise.all(BUSINESSES.map(id=>fetch('businesses/'+id+'/meta.json').then(r=>r.json()).then(d=>({id,...d})).catch(()=>null)));
-  businesses=results.filter(Boolean).sort((a,b)=>new Date(b.date)-new Date(a.date));
-  const pursuing=businesses.filter(b=>b.verdict==='pursue').length;
-  document.getElementById('nav-meta').textContent=businesses.length+' businesses \u00b7 '+pursuing+' pursuing';
-  renderSidebar();if(businesses.length)selectBusiness(businesses[0].id);
-}
-function countFiles(b){return Object.values(b.files||{}).filter(Boolean).length;}
-function countTotal(b){return Object.keys(b.files||{}).length;}
-function tabDoneCount(b,tab){return tab.reports.filter(r=>b.files&&b.files[r.key]).length;}
-function tabHasAny(b,tab){return tab.reports.some(r=>b.files&&b.files[r.key]);}
-function formatDate(iso){return new Date(iso+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
-let searchQ='';
-function onSearch(v){searchQ=v;renderSidebar();}
-function renderSidebar(){
-  const list=businesses.filter(b=>b.name.toLowerCase().includes(searchQ.toLowerCase()));
-  const cards=list.map(b=>{
-    const done=countFiles(b),total=countTotal(b),pct=total>0?Math.round(done/total*100):0;
-    return '<div class="biz-card '+(selectedId===b.id?'active':'')+'" onclick="selectBusiness(\''+b.id+'\')">'+
-    '<div class="biz-card-name">'+b.name+'</div>'+
-    '<div class="biz-card-row"><div class="biz-date">'+formatDate(b.date)+'</div>'+
-    '<div class="verdict-badge verdict-'+b.verdict+'">'+(b.verdict==='pursue'?'\u25b2 Pursue':'\u2715 No-Go')+'</div></div>'+
-    '<div class="progress-bar"><div class="progress-fill'+(b.verdict==='nogo'?' nogo':'')+'" style="width:'+pct+'%"></div></div></div>';
-  }).join('');
-  const empty=list.length===0?'<div class="search-empty">No matches</div>':'';
-  document.getElementById('sidebar').innerHTML=
-    '<div class="sidebar-label">Businesses</div>'+
-    '<div class="search-wrap"><div class="search-inner">'+
-    '<span class="search-icon">\u2315</span>'+
-    '<input class="search-input" type="text" placeholder="Search..." value="'+searchQ+'" oninput="onSearch(this.value)">'+
-    '</div></div>'+cards+empty;
-}
-function selectBusiness(id){selectedId=id;activeTab='research';renderSidebar();renderMain();}
-function selectTab(tabId){
-  const b=businesses.find(x=>x.id===selectedId),tab=TABS.find(t=>t.id===tabId);
-  if(!b||!tab)return;activeTab=tabId;renderTabs(b);renderPhaseContent(b);
-}
-function renderMain(){
-  const b=businesses.find(x=>x.id===selectedId);if(!b)return;
-  const done=countFiles(b),total=countTotal(b),pct=total>0?Math.round(done/total*100):0;
-  document.getElementById('main').innerHTML=
-    '<div class="main-top">'+
-    '<div class="biz-header"><div class="biz-header-top">'+
-    '<div class="biz-title">'+b.name+'</div>'+
-    '<div class="verdict-badge verdict-'+b.verdict+'" style="font-size:10px;padding:5px 14px;flex-shrink:0;margin-top:4px">'+
-    (b.verdict==='pursue'?'\u25b2 Pursue Immediately':'\u2715 No-Go')+'</div></div>'+
-    '<div class="biz-meta-row">'+
-    '<div class="biz-meta-item"><div class="biz-meta-label">Market</div><div class="biz-meta-value">'+b.market+'</div></div>'+
-    '<div class="biz-meta-item"><div class="biz-meta-label">Researched</div><div class="biz-meta-value">'+formatDate(b.date)+'</div></div>'+
-    '<div class="biz-meta-item"><div class="biz-meta-label">Reports</div><div class="biz-meta-value">'+done+' / '+total+'</div></div></div>'+
-    (b.notes?'<div class="biz-notes">'+b.notes+'</div>':'')+
-    '</div>'+
-    '<div class="stats-row">'+
-    '<div class="stat-cell"><div class="stat-num">'+done+'</div><div class="stat-label">Done</div></div>'+
-    '<div class="stat-cell"><div class="stat-num">'+(total-done)+'</div><div class="stat-label">Remaining</div></div>'+
-    '<div class="stat-cell"><div class="stat-num">'+pct+'%</div><div class="stat-label">Complete</div></div></div>'+
-    '</div>'+
-    '<div class="phase-tabs-wrap"><div class="phase-tabs" id="phase-tabs"></div></div>'+
-    '<div class="main-scroll"><div id="phase-content"></div></div>';
-  renderTabs(b);renderPhaseContent(b);
-}
-function renderTabs(b){
-  const el=document.getElementById('phase-tabs');if(!el)return;
-  el.innerHTML=TABS.map(tab=>{
-    const done=tabDoneCount(b,tab);
-    const cls=['phase-tab',activeTab===tab.id?'active':'',!tabHasAny(b,tab)?'disabled':'',tab.isSales?'sales-tab':''].filter(Boolean).join(' ');
-    return '<div class="'+cls+'" onclick="selectTab(\''+tab.id+'\')"><span>'+tab.label+'</span><span class="tab-count">'+done+'/'+tab.reports.length+'</span></div>';
-  }).join('');
-}
 
 const SKILL_PROMPTS={
   'research':'Run the business-research-agent skill on {BIZ}. Twin Cities, MN market.',
@@ -613,6 +590,84 @@ const SKILL_PROMPTS={
   'revops':'Run the revops skill on {BIZ}.',
   'churn-prevention':'Run the churn-prevention skill on {BIZ}.',
 };
+
+let businesses=[],selectedId=null,activeTab='research';
+let searchQ='';
+
+async function loadAll(){
+  const results=await Promise.all(BUSINESSES.map(id=>fetch('businesses/'+id+'/meta.json').then(r=>r.json()).then(d=>({id,...d})).catch(()=>null)));
+  businesses=results.filter(Boolean).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const pursuing=businesses.filter(b=>b.verdict==='pursue').length;
+  document.getElementById('nav-meta').textContent=businesses.length+' businesses \u00b7 '+pursuing+' pursuing';
+  renderSidebar();if(businesses.length)selectBusiness(businesses[0].id);
+}
+
+function countFiles(b){return Object.values(b.files||{}).filter(Boolean).length;}
+function countTotal(b){return Object.keys(b.files||{}).length;}
+function tabDoneCount(b,tab){return tab.reports.filter(r=>b.files&&b.files[r.key]).length;}
+function tabHasAny(b,tab){return tab.reports.some(r=>b.files&&b.files[r.key]);}
+function formatDate(iso){return new Date(iso+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+
+function onSearch(v){searchQ=v;renderSidebar();}
+function renderSidebar(){
+  const list=businesses.filter(b=>b.name.toLowerCase().includes(searchQ.toLowerCase()));
+  const cards=list.map(b=>{
+    const done=countFiles(b),total=countTotal(b),pct=total>0?Math.round(done/total*100):0;
+    return '<div class="biz-card '+(selectedId===b.id?'active':'')+'" onclick="selectBusiness(''+b.id+'')">'+
+    '<div class="biz-card-name">'+b.name+'</div>'+
+    '<div class="biz-card-row"><div class="biz-date">'+formatDate(b.date)+'</div>'+
+    '<div class="verdict-badge verdict-'+b.verdict+'">'+(b.verdict==='pursue'?'\u25b2 Pursue':'\u2715 No-Go')+'</div></div>'+
+    '<div class="progress-bar"><div class="progress-fill'+(b.verdict==='nogo'?' nogo':'')+'" style="width:'+pct+'%"></div></div></div>';
+  }).join('');
+  const empty=list.length===0?'<div class="search-empty">No matches</div>':'';
+  document.getElementById('sidebar').innerHTML=
+    '<div class="sidebar-label">Businesses</div>'+
+    '<div class="search-wrap"><div class="search-inner">'+
+    '<span class="search-icon">\u2315</span>'+
+    '<input class="search-input" type="text" placeholder="Search..." value="'+searchQ+'" oninput="onSearch(this.value)">'+
+    '</div></div>'+cards+empty;
+}
+
+function selectBusiness(id){selectedId=id;activeTab='research';renderSidebar();renderMain();}
+function selectTab(tabId){
+  const b=businesses.find(x=>x.id===selectedId),tab=TABS.find(t=>t.id===tabId);
+  if(!b||!tab)return;activeTab=tabId;renderTabs(b);renderPhaseContent(b);
+}
+
+function renderMain(){
+  const b=businesses.find(x=>x.id===selectedId);if(!b)return;
+  const done=countFiles(b),total=countTotal(b),pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('main').innerHTML=
+    '<div class="main-top">'+
+    '<div class="biz-header"><div class="biz-header-top">'+
+    '<div class="biz-title">'+b.name+'</div>'+
+    '<div class="verdict-badge verdict-'+b.verdict+'" style="font-size:10px;padding:5px 14px;flex-shrink:0;margin-top:4px">'+
+    (b.verdict==='pursue'?'\u25b2 Pursue Immediately':'\u2715 No-Go')+'</div></div>'+
+    '<div class="biz-meta-row">'+
+    '<div class="biz-meta-item"><div class="biz-meta-label">Market</div><div class="biz-meta-value">'+b.market+'</div></div>'+
+    '<div class="biz-meta-item"><div class="biz-meta-label">Researched</div><div class="biz-meta-value">'+formatDate(b.date)+'</div></div>'+
+    '<div class="biz-meta-item"><div class="biz-meta-label">Reports</div><div class="biz-meta-value">'+done+' / '+total+'</div></div></div>'+
+    (b.notes?'<div class="biz-notes">'+b.notes+'</div>':'')+
+    '</div>'+
+    '<div class="stats-row">'+
+    '<div class="stat-cell"><div class="stat-num">'+done+'</div><div class="stat-label">Done</div></div>'+
+    '<div class="stat-cell"><div class="stat-num">'+(total-done)+'</div><div class="stat-label">Remaining</div></div>'+
+    '<div class="stat-cell"><div class="stat-num">'+pct+'%</div><div class="stat-label">Complete</div></div></div>'+
+    '</div>'+
+    '<div class="phase-tabs-wrap"><div class="phase-tabs" id="phase-tabs"></div></div>'+
+    '<div class="main-scroll"><div id="phase-content"></div></div>';
+  renderTabs(b);renderPhaseContent(b);
+}
+
+function renderTabs(b){
+  const el=document.getElementById('phase-tabs');if(!el)return;
+  el.innerHTML=TABS.map(tab=>{
+    const done=tabDoneCount(b,tab);
+    const cls=['phase-tab',activeTab===tab.id?'active':'',!tabHasAny(b,tab)?'disabled':'',tab.isSales?'sales-tab':''].filter(Boolean).join(' ');
+    return '<div class="'+cls+'" onclick="selectTab(''+tab.id+'')"><span>'+tab.label+'</span><span class="tab-count">'+done+'/'+tab.reports.length+'</span></div>';
+  }).join('');
+}
+
 function renderPhaseContent(b){
   const el=document.getElementById('phase-content');if(!el)return;
   const scroller=document.querySelector('.main-scroll');
@@ -620,45 +675,265 @@ function renderPhaseContent(b){
   const tab=TABS.find(t=>t.id===activeTab);if(!tab)return;
   const isSales=tab.isSales,phaseTitle=tab.sublabel?tab.label+' \u2014 '+tab.sublabel:tab.label;
 
-  // build "run phase" button — only for reports not yet done
+  // Run phase button — for missing reports only
   const missing=tab.reports.filter(r=>!b.files||!b.files[r.key]);
   let runPhaseBtn='';
   if(missing.length>0){
-    const phasePrompt='Run the following skills on '+b.name+' (Twin Cities, MN) as a unit, in order:\n\n'+
-      missing.map((r,i)=>(i+1)+'. '+(SKILL_PROMPTS[r.key]||r.name).replace(/\{BIZ\}/g,b.name)).join('\n')+
-      '\n\nEach skill should read the outputs of the previous ones as context before running.';
-    const phaseUrl='https://claude.ai/new?q='+encodeURIComponent(phasePrompt);
-    runPhaseBtn='<a class="run-phase-btn'+(isSales?' run-phase-sales':'')+'" href="'+phaseUrl+'" target="_blank">'+
-      'Run '+(missing.length===tab.reports.length?'Phase':'Remaining')+' ('+missing.length+') \u2197</a>';
+    const missingKeys=JSON.stringify(missing.map(r=>r.key));
+    runPhaseBtn='<button class="run-phase-btn'+(isSales?' run-phase-sales':'')+'" onclick="runPhaseViaAPI(''+b.id+'','+missingKeys+',''+phaseTitle.replace(/'/g,"\'")+'')">'+
+      'Run '+(missing.length===tab.reports.length?'Phase':'Remaining')+' ('+missing.length+')</button>';
   }
 
   const rows=tab.reports.map((report,i)=>{
     const file=b.files&&b.files[report.key],num=String(i+1).padStart(2,'0');
     if(file){
       const path='businesses/'+b.id+'/'+file;
-      return '<div class="report-row has-file'+(isSales?' sales-row':'')+'" onclick="openPreview(\''+path+'\',\''+report.name.replace(/'/g,"\\'")+'\')" style="cursor:pointer">'+
+      return '<div class="report-row has-file'+(isSales?' sales-row':'')+'" onclick="openPreview(''+path+'',''+report.name.replace(/'/g,"\'")+'')">'+
         '<div class="report-num">'+num+'</div>'+
         '<div class="report-status '+(isSales?'sales-done':'done')+'">\u2713</div>'+
         '<div class="report-info"><div class="report-name">'+report.name+'</div><div class="report-desc">'+report.desc+'</div></div>'+
         '<div class="report-file">'+file+'</div>'+
         '<div class="open-btn'+(isSales?' sales':'')+'">View \u2197</div></div>';
     }
-    const prompt=(SKILL_PROMPTS[report.key]||'Run the '+report.name+' skill on {BIZ}.').replace(/\{BIZ\}/g,b.name);
-    const claudeUrl='https://claude.ai/new?q='+encodeURIComponent(prompt);
     return '<div class="report-row no-file">'+
       '<div class="report-num">'+num+'</div><div class="report-status"></div>'+
       '<div class="report-info"><div class="report-name">'+report.name+'</div><div class="report-desc">'+report.desc+'</div></div>'+
-      '<a class="launch-btn" href="'+claudeUrl+'" target="_blank">Run in Claude \u2197</a></div>';
+      '<button class="launch-btn" onclick="runSkill(''+b.id+'',''+report.key+'',''+report.name.replace(/'/g,"\'")+'',''+phaseTitle.replace(/'/g,"\'")+'')">Run via API</button></div>';
   }).join('');
 
   el.innerHTML='<div class="phase-content"><div class="phase-header">'+
-    '<div class="phase-title-row">'+
-    '<div class="phase-title">'+phaseTitle+'</div>'+
-    runPhaseBtn+
-    '</div>'+
+    '<div class="phase-title-row"><div class="phase-title">'+phaseTitle+'</div>'+runPhaseBtn+'</div>'+
     (tab.sublabel?'<div class="phase-subtitle '+(isSales?'sales':'gold')+'">'+(isSales?'// Runs independently \u2014 parallel to main phase track':'// Runs as a unit \u2014 each report feeds the next')+'</div>':'')+
     '</div><div class="reports-list">'+rows+'</div></div>';
 }
+
+/* ── API CALLS ── */
+async function runSkill(bizId,skillKey,reportTitle,phaseLabel){
+  openReviewPanel(reportTitle,null,null,true);
+  try{
+    const res=await fetch(BACKEND_URL+'/run-skill',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({bizId,skillKey})
+    });
+    const data=await res.json();
+    if(!data.ok)throw new Error(data.error);
+    openReviewPanel(reportTitle,data.output,{bizId,skillKey,reportTitle,phaseLabel},false);
+  }catch(e){openReviewPanel(reportTitle,null,null,false,e.message);}
+}
+
+async function runPhaseViaAPI(bizId,skillKeys,phaseTitle){
+  openReviewPanel('Running '+phaseTitle+'...',null,null,true);
+  try{
+    const res=await fetch(BACKEND_URL+'/run-phase',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({bizId,skillKeys})
+    });
+    const data=await res.json();
+    if(!data.ok)throw new Error(data.error);
+    const combined=data.results.map(r=>
+      r.ok?'# '+r.skillKey+'\n\n'+r.output:'# '+r.skillKey+' ERROR: '+r.error
+    ).join('\n\n---\n\n');
+    openReviewPanel(phaseTitle+' \u2014 All Reports',combined,
+      {bizId,skillKeys,results:data.results,phaseTitle,isPhase:true},false);
+  }catch(e){openReviewPanel(phaseTitle,null,null,false,e.message);}
+}
+
+async function saveReport(saveData){
+  const btn=document.getElementById('review-save-btn');
+  if(btn){btn.textContent='Saving...';btn.disabled=true;}
+  try{
+    if(saveData.isPhase){
+      for(const result of saveData.results){
+        if(!result.ok)continue;
+        await fetch(BACKEND_URL+'/save-report',{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({bizId:saveData.bizId,skillKey:result.skillKey,output:result.output,reportTitle:result.skillKey,phaseLabel:saveData.phaseTitle})
+        });
+      }
+    } else {
+      const res=await fetch(BACKEND_URL+'/save-report',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(saveData)
+      });
+      const data=await res.json();
+      if(!data.ok)throw new Error(data.error);
+    }
+    closeReviewPanel();
+    // Refresh this business from GitHub
+    const idx=businesses.findIndex(b=>b.id===saveData.bizId);
+    if(idx>=0){
+      const meta=await fetch('businesses/'+saveData.bizId+'/meta.json?t='+Date.now()).then(r=>r.json()).catch(()=>null);
+      if(meta)businesses[idx]={...businesses[idx],...meta,id:saveData.bizId};
+    }
+    renderSidebar();renderMain();
+  }catch(e){
+    if(btn){btn.textContent='Save to GitHub \u2197';btn.disabled=false;}
+    alert('Save failed: '+e.message);
+  }
+}
+
+/* ── REVIEW PANEL STATE ── */
+let rvContent='';       // current text content (editable)
+let rvSaveData=null;    // save metadata
+let rvMode='edit';      // 'edit' | 'preview'
+let rvHistory=[];       // [{role,content}] conversation history for revisions
+
+/* ── OPEN REVIEW PANEL ── */
+function openReviewPanel(title,content,saveData,loading,error){
+  document.getElementById('review-title').textContent=title;
+  const saveBtn=document.getElementById('review-save-btn');
+  const chat=document.getElementById('rv-chat');
+  const rvLoading=document.getElementById('rv-loading');
+  const rvEditor=document.getElementById('rv-editor');
+  const rvPreview=document.getElementById('rv-preview');
+  const rvError=document.getElementById('rv-error');
+
+  // Reset all panels
+  rvLoading.style.display='none';
+  rvEditor.style.display='none';
+  rvPreview.style.display='none';
+  rvError.style.display='none';
+  chat.style.display='none';
+  saveBtn.style.display='none';
+
+  if(loading){
+    rvLoading.style.display='flex';
+  } else if(error){
+    rvError.style.display='block';
+    rvError.innerHTML='\u26a0 Error: '+error+'<br><small>Make sure the backend URL is set correctly and Railway is running.</small>';
+  } else {
+    rvContent=content;
+    rvSaveData=saveData;
+    rvHistory=[{role:'user',content:'Here is the report I want to work with:\n\n'+content},
+               {role:'assistant',content:'I have read the report. What would you like to change or improve?'}];
+    document.getElementById('rv-chat-history').innerHTML='';
+
+    setReviewMode('edit');
+    chat.style.display='flex';
+
+    if(saveData){
+      saveBtn.style.display='flex';
+      saveBtn.onclick=()=>saveReport({...saveData, output:rvContent});
+      saveBtn.textContent=saveData.isPhase?'Save All to GitHub \u2197':'Save to GitHub \u2197';
+      saveBtn.disabled=false;
+    }
+  }
+
+  document.getElementById('review-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+/* ── MODE TOGGLE: EDIT vs PREVIEW ── */
+function setReviewMode(mode){
+  rvMode=mode;
+  const editor=document.getElementById('rv-editor');
+  const preview=document.getElementById('rv-preview');
+  document.getElementById('rv-btn-edit').classList.toggle('active', mode==='edit');
+  document.getElementById('rv-btn-preview').classList.toggle('active', mode==='preview');
+
+  if(mode==='edit'){
+    editor.style.display='block';
+    editor.style.flex='1';
+    preview.style.display='none';
+    editor.value=rvContent;
+  } else {
+    editor.style.display='none';
+    preview.style.display='block';
+    renderPreview(rvContent);
+  }
+}
+
+function onEditorChange(){
+  rvContent=document.getElementById('rv-editor').value;
+  // keep save button pointing at latest content
+  const saveBtn=document.getElementById('review-save-btn');
+  if(saveBtn&&rvSaveData){
+    saveBtn.onclick=()=>saveReport({...rvSaveData, output:rvContent});
+  }
+}
+
+function renderPreview(text){
+  const el=document.getElementById('rv-preview');
+  const escaped=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const formatted=escaped
+    .replace(/^# (.+)$/gm,'<h1 class="rv-h1">$1</h1>')
+    .replace(/^## (.+)$/gm,'<h2 class="rv-h2">$1</h2>')
+    .replace(/^### (.+)$/gm,'<h3 class="rv-h3">$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/^(\d+\. .+)$/gm,'<li>$1</li>')
+    .replace(/\n\n/g,'</p><p class="rv-p">');
+  el.innerHTML='<p class="rv-p">'+formatted+'</p>';
+}
+
+/* ── CHAT / REVISION ── */
+function onChatKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendRevision();}
+}
+
+async function sendRevision(){
+  const input=document.getElementById('rv-chat-input');
+  const msg=input.value.trim();
+  if(!msg)return;
+  input.value='';
+
+  const history=document.getElementById('rv-chat-history');
+  const sendBtn=document.getElementById('rv-chat-send');
+
+  // Show user message
+  history.innerHTML+='<div class="rv-chat-msg rv-chat-user">'+escHtml(msg)+'</div>';
+  history.scrollTop=history.scrollHeight;
+  sendBtn.disabled=true;
+  sendBtn.textContent='...';
+
+  // Add to conversation
+  rvHistory.push({role:'user',content:msg+'\n\nCurrent report text:\n\n'+rvContent});
+
+  try{
+    const res=await fetch(BACKEND_URL+'/revise',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:rvHistory})
+    });
+    const data=await res.json();
+    if(!data.ok)throw new Error(data.error);
+
+    const reply=data.output;
+    rvHistory.push({role:'assistant',content:reply});
+
+    // Check if reply looks like a full report rewrite (contains # headings)
+    if(reply.includes('\n# ')||reply.startsWith('# ')){
+      rvContent=reply;
+      if(rvMode==='edit') document.getElementById('rv-editor').value=rvContent;
+      else renderPreview(rvContent);
+      history.innerHTML+='<div class="rv-chat-msg rv-chat-assistant">\u2713 Report updated. Switch to Edit or Preview to see changes.</div>';
+    } else {
+      history.innerHTML+='<div class="rv-chat-msg rv-chat-assistant">'+escHtml(reply)+'</div>';
+    }
+    history.scrollTop=history.scrollHeight;
+
+    // Update save button to use latest content
+    const saveBtn=document.getElementById('review-save-btn');
+    if(saveBtn&&rvSaveData){
+      saveBtn.onclick=()=>saveReport({...rvSaveData,output:rvContent});
+    }
+  }catch(e){
+    history.innerHTML+='<div class="rv-chat-msg rv-chat-error">\u26a0 '+escHtml(e.message)+'</div>';
+  }
+  sendBtn.disabled=false;
+  sendBtn.textContent='Send';
+  history.scrollTop=history.scrollHeight;
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function closeReviewPanel(){
+  document.getElementById('review-overlay').classList.remove('open');
+  document.body.style.overflow='';
+  rvContent=''; rvSaveData=null; rvHistory=[];
+}
+
+/* ── PDF PREVIEW ── */
 function openPreview(src,title){
   document.getElementById('preview-title').textContent=title;
   document.getElementById('preview-ext').href=src;
@@ -682,9 +957,47 @@ function closePreview(){
     document.getElementById('preview-loading').style.display='flex';
   },320);
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePreview();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePreview();closeReviewPanel();}});
 loadAll();
 </script>
+
+<!-- REVIEW PANEL -->
+<div class="preview-overlay" id="review-overlay">
+  <div class="preview-backdrop" onclick="closeReviewPanel()"></div>
+  <div class="preview-panel" style="width:min(780px,96vw)">
+    <div class="preview-header">
+      <div class="preview-title" id="review-title">Report</div>
+      <div class="preview-btns">
+        <button class="rv-mode-btn active" id="rv-btn-edit" onclick="setReviewMode('edit')">Edit</button>
+        <button class="rv-mode-btn" id="rv-btn-preview" onclick="setReviewMode('preview')">Preview</button>
+        <button class="preview-ext-btn" id="review-save-btn" style="display:none">Save to GitHub ↗</button>
+        <div class="preview-close" onclick="closeReviewPanel()">&#10005;</div>
+      </div>
+    </div>
+    <div class="preview-body" id="review-body" style="display:flex;flex-direction:column;overflow:hidden;">
+      <div class="review-loading" id="rv-loading">
+        <div class="preview-spin"></div>
+        <div class="preview-loading-txt">Claude is thinking... 30–60 seconds.</div>
+      </div>
+      <!-- Edit mode: raw textarea -->
+      <textarea id="rv-editor" class="rv-editor" style="display:none" spellcheck="false" oninput="onEditorChange()"></textarea>
+      <!-- Preview mode: rendered -->
+      <div id="rv-preview" class="review-content" style="display:none;flex:1;overflow-y:auto;"></div>
+      <!-- Error -->
+      <div id="rv-error" class="review-error" style="display:none;"></div>
+      <!-- Chat bar -->
+      <div class="rv-chat" id="rv-chat" style="display:none">
+        <div class="rv-chat-history" id="rv-chat-history"></div>
+        <div class="rv-chat-input-row">
+          <textarea id="rv-chat-input" class="rv-chat-textarea" placeholder='Ask Claude to revise something... e.g. "Rewrite section 2 to focus more on pricing"' rows="2" onkeydown="onChatKey(event)"></textarea>
+          <button class="rv-chat-send" id="rv-chat-send" onclick="sendRevision()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
 
 <!-- PDF PREVIEW PANEL -->
 <div class="preview-overlay" id="preview-overlay">
