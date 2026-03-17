@@ -1,8 +1,8 @@
 {
-  "totalCost": 0.192,
-  "totalInputTokens": 20709,
-  "totalOutputTokens": 8655,
-  "totalRuns": 2,
+  "totalCost": 0.3588,
+  "totalInputTokens": 35360,
+  "totalOutputTokens": 16847,
+  "totalRuns": 3,
   "entries": [
     {
       "bizId": "backflow-prevention-testing",
@@ -21,6 +21,15 @@
       "input_tokens": 15898,
       "output_tokens": 4013,
       "cost_usd": 0.1079
+    },
+    {
+      "bizId": "backflow-prevention-testing",
+      "bizName": "Backflow Prevention Testing",
+      "report": "hormozi-sales",
+      "date": "2026-03-17",
+      "input_tokens": 14651,
+      "output_tokens": 8192,
+      "cost_usd": 0.1668
     }
   ],
   "overrides": {
@@ -30,5 +39,5 @@
       "updatedAt": "2026-03-17T06:14:12.396Z"
     }
   },
-  "lastUpdated": "2026-03-17T07:05:32.676Z"
+  "lastUpdated": "2026-03-17T22:39:30.049Z"
 }
