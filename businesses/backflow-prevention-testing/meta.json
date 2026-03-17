@@ -8,11 +8,20 @@
     "research": "research.pdf",
     "sales-team": "02-sales-team.pdf",
     "hormozi": "03-hormozi.pdf",
-    "customer-acquisition": null,
+    "customer-acquisition": "customer-acquisition.pdf",
     "challenger-sale": "challenger-sale.pdf",
     "ci": "ci.pdf",
     "customer-research": "customer-research.pdf",
     "hormozi-intel": "hormozi-intel.pdf",
     "hormozi-sales": "hormozi-sales.pdf"
-  }
+  },
+  "usage": [
+    {
+      "report": "customer-acquisition",
+      "date": "2026-03-17",
+      "input_tokens": 4811,
+      "output_tokens": 4642,
+      "cost_usd": 0.0841
+    }
+  ]
 }
