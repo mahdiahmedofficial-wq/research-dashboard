@@ -288,25 +288,25 @@ body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
 .review-content strong{color:var(--text);font-weight:600;}
 
 /* ── HOMEPAGE ── */
-.homepage{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:32px;display:flex;flex-direction:column;gap:24px;}
+.homepage{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:20px 28px;display:flex;flex-direction:column;gap:14px;}
 .hp-greeting{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;
   background:linear-gradient(135deg,var(--text) 50%,var(--purple));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hp-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.08em;margin-top:4px;}
-.hp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.hp-card{background:rgba(12,14,24,0.8);border:1px solid var(--border2);border-radius:12px;padding:20px 22px;backdrop-filter:blur(10px);position:relative;overflow:hidden;}
+.hp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.hp-card{background:rgba(12,14,24,0.8);border:1px solid var(--border2);border-radius:12px;padding:14px 16px;backdrop-filter:blur(10px);position:relative;overflow:hidden;}
 .hp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,var(--purple-dim),transparent);opacity:0.5;}
 .hp-card-title{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;
-  text-transform:uppercase;color:var(--text3);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  text-transform:uppercase;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .hp-card-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent);}
-.hp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.hp-stat{text-align:center;padding:14px 8px;background:rgba(8,9,20,0.6);border-radius:8px;border:1px solid var(--border);}
-.hp-stat-num{font-family:'Space Mono',monospace;font-weight:700;font-size:26px;
+.hp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.hp-stat{text-align:center;padding:10px 8px;background:rgba(8,9,20,0.6);border-radius:8px;border:1px solid var(--border);}
+.hp-stat-num{font-family:'Space Mono',monospace;font-weight:700;font-size:22px;
   background:linear-gradient(135deg,var(--text),var(--purple));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
 .hp-stat-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:0.08em;margin-top:4px;}
-.hp-feed{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;}
+.hp-feed{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow-y:auto;}
 .hp-feed-item{display:flex;align-items:center;gap:10px;padding:9px 12px;
   background:rgba(8,9,20,0.5);border-radius:8px;border:1px solid var(--border);transition:all 0.15s;}
 .hp-feed-item:hover{background:rgba(16,18,26,0.8);border-color:var(--border2);}
@@ -328,24 +328,24 @@ body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
 /* ── FIND OPPORTUNITY CARD ── */
 .hp-opportunity-card{position:relative;border-radius:10px;overflow:hidden;
   background:rgba(8,9,20,0.7);border:1px solid var(--purple-bd);
-  padding:48px 22px;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;min-height:280px;text-align:center;}
+  padding:24px 22px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;min-height:0;text-align:center;}
 .hp-opp-glow{position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(167,139,250,0.12) 0%,transparent 70%);
   animation:opp-pulse 3s ease-in-out infinite;}
 @keyframes opp-pulse{0%,100%{opacity:0.6;}50%{opacity:1;}}
-.hp-opp-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;}
-.hp-opp-label{font-family:'Space Grotesk',sans-serif;font-size:52px;font-weight:700;
-  color:#fde68a;margin-bottom:8px;display:flex;align-items:center;gap:20px;}
-.hp-opp-label::before,.hp-opp-label::after{content:'';display:block;width:24px;height:2px;
+.hp-opp-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.hp-opp-label{font-family:'Space Grotesk',sans-serif;font-size:38px;font-weight:700;
+  color:#fde68a;margin-bottom:4px;display:flex;align-items:center;gap:14px;}
+.hp-opp-label::before,.hp-opp-label::after{content:'';display:block;width:20px;height:2px;
   background:linear-gradient(90deg,var(--purple-dim),var(--purple));border-radius:2px;flex-shrink:0;}
 .hp-opp-label::after{background:linear-gradient(90deg,var(--purple),var(--purple-dim));}
-.hp-opp-desc{font-family:'Space Mono',monospace;font-size:13px;color:var(--text3);
-  letter-spacing:0.05em;line-height:1.6;margin-bottom:28px;max-width:420px;}
+.hp-opp-desc{font-family:'Space Mono',monospace;font-size:11px;color:var(--text3);
+  letter-spacing:0.04em;line-height:1.5;margin-bottom:14px;max-width:420px;}
 .hp-opp-run{display:inline-flex;align-items:center;gap:10px;
-  font-family:'Space Mono',monospace;font-size:12px;font-weight:700;
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
   letter-spacing:0.12em;text-transform:uppercase;
-  color:var(--purple);padding:13px 40px;border:1px solid var(--purple-bd);border-radius:8px;
+  color:var(--purple);padding:10px 30px;border:1px solid var(--purple-bd);border-radius:8px;
   background:var(--purple-bg);cursor:pointer;transition:all 0.18s;position:relative;overflow:hidden;}
 .hp-opp-run::before{content:'';position:absolute;inset:0;
   background:linear-gradient(90deg,transparent,rgba(167,139,250,0.1),transparent);
@@ -357,7 +357,7 @@ body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
 
 /* ── API USAGE CARD ── */
 .hp-usage-card{background:rgba(12,14,24,0.8);border:1px solid var(--border2);border-radius:12px;
-  padding:20px 22px;backdrop-filter:blur(10px);position:relative;overflow:hidden;}
+  padding:14px 16px;backdrop-filter:blur(10px);position:relative;overflow:hidden;}
 .hp-usage-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);opacity:0.5;}
 .usage-bar-track{height:6px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;margin:10px 0 6px;}
@@ -757,33 +757,33 @@ function renderUsageCard(){
 
   return '<div class="hp-usage-card">'+
     '<div class="hp-card-title">API Usage</div>'+
-    '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;">'+
-      '<div style="font-family:\'Space Mono\',monospace;font-size:28px;font-weight:700;color:var(--gold)">$'+displayCost.toFixed(2)+'</div>'+
+    '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px;">'+
+      '<div style="font-family:\'Space Mono\',monospace;font-size:24px;font-weight:700;color:var(--gold)">$'+displayCost.toFixed(2)+'</div>'+
       '<div style="font-family:\'Space Mono\',monospace;font-size:10px;color:var(--text3)">'+
         (isVerified?'<span class="usage-verified">\u2713 verified</span>':'estimated')+
       '</div>'+
     '</div>'+
-    '<div class="usage-bar-track"><div class="usage-bar-fill '+barClass+'" style="width:'+pct+'%"></div></div>'+
+    '<div class="usage-bar-track" style="margin:6px 0 4px;"><div class="usage-bar-fill '+barClass+'" style="width:'+pct+'%"></div></div>'+
     '<div class="usage-bar-labels"><span>$0</span><span>'+pct+'% of $'+budget.toFixed(2)+' budget</span></div>'+
-    '<div class="usage-metrics">'+
-      '<div class="usage-metric"><div class="usage-metric-label">Input tokens</div><div class="usage-metric-val">'+totalIn.toLocaleString()+'</div></div>'+
-      '<div class="usage-metric"><div class="usage-metric-label">Output tokens</div><div class="usage-metric-val purple">'+totalOut.toLocaleString()+'</div></div>'+
-      '<div class="usage-metric"><div class="usage-metric-label">Reports run</div><div class="usage-metric-val gold">'+totalRuns+'</div></div>'+
-      '<div class="usage-metric"><div class="usage-metric-label">Avg per report</div><div class="usage-metric-val">$'+avgCost+'</div></div>'+
+    '<div class="usage-metrics" style="gap:6px;margin-top:8px;">'+
+      '<div class="usage-metric" style="padding:7px 10px;"><div class="usage-metric-label">Input tokens</div><div class="usage-metric-val" style="font-size:14px;">'+totalIn.toLocaleString()+'</div></div>'+
+      '<div class="usage-metric" style="padding:7px 10px;"><div class="usage-metric-label">Output tokens</div><div class="usage-metric-val purple" style="font-size:14px;">'+totalOut.toLocaleString()+'</div></div>'+
+      '<div class="usage-metric" style="padding:7px 10px;"><div class="usage-metric-label">Reports run</div><div class="usage-metric-val gold" style="font-size:14px;">'+totalRuns+'</div></div>'+
+      '<div class="usage-metric" style="padding:7px 10px;"><div class="usage-metric-label">Avg / report</div><div class="usage-metric-val" style="font-size:14px;">$'+avgCost+'</div></div>'+
     '</div>'+
-    '<div class="usage-override-row">'+
-      '<div class="usage-override-label">Monthly budget</div>'+
+    '<div class="usage-override-row" style="margin-top:8px;padding-top:8px;">'+
+      '<div class="usage-override-label">Budget</div>'+
       '<input class="usage-override-input" id="budget-input" type="text" value="$'+budget.toFixed(2)+'" placeholder="$10.00" />'+
       '<button class="usage-save-btn" onclick="saveUsageOverride(\'budget\',document.getElementById(\'budget-input\').value.replace(\'$\',\'\'))">Save</button>'+
     '</div>'+
-    '<div class="usage-override-row">'+
-      '<div class="usage-override-label">Actual billing <span style="color:var(--text3);font-size:9px">(from Anthropic)</span></div>'+
+    '<div class="usage-override-row" style="margin-top:5px;padding-top:5px;">'+
+      '<div class="usage-override-label">Actual <span style="color:var(--text3);font-size:9px">(Anthropic dashboard)</span></div>'+
       '<input class="usage-override-input" id="actual-input" type="text" placeholder="$0.00" value="'+(actualCost!==null?'$'+actualCost.toFixed(2):'')+'" />'+
       '<button class="usage-save-btn" onclick="saveUsageOverride(\'actual\',document.getElementById(\'actual-input\').value.replace(\'$\',\'\'))">Save</button>'+
     '</div>'+
-    '<div style="margin-top:16px;">'+
-      '<div class="hp-card-title" style="margin-bottom:10px">Recent Generations</div>'+
-      '<div class="usage-log">'+logHtml+'</div>'+
+    '<div style="margin-top:10px;">'+
+      '<div class="hp-card-title" style="margin-bottom:6px;font-size:8px;">Recent Generations</div>'+
+      '<div class="usage-log" style="max-height:110px;overflow-y:auto;">'+logHtml+'</div>'+
     '</div>'+
   '</div>';
 }
