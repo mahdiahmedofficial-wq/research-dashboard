@@ -6,9 +6,9 @@
   "entries": [],
   "overrides": {
     "2026-03": {
-      "actualCost": null,
-      "budget": 10,
-      "updatedAt": "2026-03-17T05:37:54.234Z"
+      "actualCost": 10,
+      "budget": null,
+      "updatedAt": "2026-03-17T05:37:54.944Z"
     }
   }
 }
