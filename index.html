@@ -860,8 +860,9 @@ function renderUsageCard(){
   const overrides=s&&s.overrides&&s.overrides[month]?s.overrides[month]:{};
   const budget=overrides.budget||10;
   const actualCost=overrides.actualCost||null;
-  const estimatedCost=s?s.totalCost:0;
-  const displayCost=actualCost!==null?actualCost:estimatedCost;
+  const trackedCost=s?s.totalCost:0;
+  const startingBalance=actualCost!==null?actualCost:0;
+  const estimatedCost=parseFloat((startingBalance+trackedCost).toFixed(4));
   const pct=budget>0?Math.min(100,Math.round(estimatedCost/budget*100)):0;
   const barClass=pct>=90?'danger':pct>=70?'warn':'';
   const totalIn=s?s.totalInputTokens:0;
@@ -893,7 +894,7 @@ function renderUsageCard(){
   html+='<div class="hp-card-title">API Usage</div>';
   html+='<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:4px;">';
   html+='<div style="font-family:\'Space Mono\',monospace;font-size:24px;font-weight:700;color:var(--gold)">$'+estimatedCost.toFixed(2)+'</div>';
-  html+='<div style="font-family:\'Space Mono\',monospace;font-size:10px;color:var(--text3)">'+(isVerified?'<span class="usage-verified">\u2713 verified · $'+actualCost.toFixed(2)+' actual</span>':'estimated')+'</div>';
+  html+='<div style="font-family:\'Space Mono\',monospace;font-size:10px;color:var(--text3)">'+(isVerified?'<span class="usage-verified">\u2713 $'+actualCost.toFixed(2)+' base + tracked</span>':'auto-tracked')+'</div>';
   html+='</div>';
   html+='<div class="usage-bar-track" style="margin:4px 0 3px;"><div class="usage-bar-fill '+barClass+'" style="width:'+pct+'%"></div></div>';
   html+='<div class="usage-bar-labels"><span>$0</span><span>'+pct+'% of $'+budget.toFixed(2)+' budget</span></div>';
@@ -909,7 +910,7 @@ function renderUsageCard(){
   html+='<button class="usage-save-btn" onclick="saveUsageOverride(\'budget\',document.getElementById(\'budget-input\').value.replace(\'$\',\'\'))">Save</button>';
   html+='</div>';
   html+='<div class="usage-override-row" style="margin-top:5px;padding-top:5px;">';
-  html+='<div class="usage-override-label">Spent <span style="color:var(--text3);font-size:9px">(Anthropic dashboard)</span></div>';
+  html+='<div class="usage-override-label">Starting balance <span style="color:var(--text3);font-size:9px">(prior spend)</span></div>';
   html+='<input class="usage-override-input" id="actual-input" type="text" placeholder="$0.00" value="'+(actualCost!==null?'$'+actualCost.toFixed(2):'')+'" />';
   html+='<button class="usage-save-btn" onclick="saveUsageOverride(\'actual\',document.getElementById(\'actual-input\').value.replace(\'$\',\'\'))">Save</button>';
   html+='</div>';
