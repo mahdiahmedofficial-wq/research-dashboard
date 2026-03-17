@@ -581,7 +581,7 @@ function closeUsageHistory(){
 (function(){
   const canvas=document.getElementById('bg-canvas');
   const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
   renderer.setClearColor(0x08091a,1);
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,300);
