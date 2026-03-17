@@ -1,8 +1,8 @@
 {
-  "totalCost": 0.0841,
-  "totalInputTokens": 4811,
-  "totalOutputTokens": 4642,
-  "totalRuns": 1,
+  "totalCost": 0.192,
+  "totalInputTokens": 20709,
+  "totalOutputTokens": 8655,
+  "totalRuns": 2,
   "entries": [
     {
       "bizId": "backflow-prevention-testing",
@@ -12,6 +12,15 @@
       "input_tokens": 4811,
       "output_tokens": 4642,
       "cost_usd": 0.0841
+    },
+    {
+      "bizId": "backflow-prevention-testing",
+      "bizName": "Backflow Prevention Testing",
+      "report": "challenger-sale",
+      "date": "2026-03-17",
+      "input_tokens": 15898,
+      "output_tokens": 4013,
+      "cost_usd": 0.1079
     }
   ],
   "overrides": {
@@ -21,5 +30,5 @@
       "updatedAt": "2026-03-17T06:14:12.396Z"
     }
   },
-  "lastUpdated": "2026-03-17T06:32:31.146Z"
+  "lastUpdated": "2026-03-17T07:05:32.676Z"
 }
