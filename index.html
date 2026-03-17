@@ -861,22 +861,46 @@ function renderUsageCard(){
   html+='</div>';
   html+='<div class="usage-bar-track" style="margin:4px 0 3px;"><div class="usage-bar-fill '+barClass+'" style="width:'+pct+'%"></div></div>';
   html+='<div class="usage-bar-labels"><span>$0</span><span>'+pct+'% of $'+budget.toFixed(2)+' budget</span></div>';
-  html+='<div class="usage-metrics" style="gap:5px;margin-top:8px;">';
-  html+='<div class="usage-metric" style="padding:6px 8px;"><div class="usage-metric-label">Input</div><div class="usage-metric-val" style="font-size:13px;">'+totalIn.toLocaleString()+'</div></div>';
-  html+='<div class="usage-metric" style="padding:6px 8px;"><div class="usage-metric-label">Output</div><div class="usage-metric-val purple" style="font-size:13px;">'+totalOut.toLocaleString()+'</div></div>';
-  html+='<div class="usage-metric" style="padding:6px 8px;"><div class="usage-metric-label">Runs</div><div class="usage-metric-val gold" style="font-size:13px;">'+totalRuns+'</div></div>';
-  html+='<div class="usage-metric" style="padding:6px 8px;"><div class="usage-metric-label">Avg</div><div class="usage-metric-val" style="font-size:13px;">$'+avgCost+'</div></div>';
-  html+='</div>';
-  html+='<div class="usage-override-row" style="margin-top:8px;padding-top:8px;">';
-  html+='<div class="usage-override-label">Budget</div>';
-  html+='<input class="usage-override-input" id="budget-input" type="text" value="$'+budget.toFixed(2)+'" placeholder="$10.00" />';
-  html+='<button class="usage-save-btn" onclick="saveUsageOverride(\'budget\',document.getElementById(\'budget-input\').value.replace(\'$\',\'\'))">Save</button>';
-  html+='</div>';
-  html+='<div class="usage-override-row" style="margin-top:5px;padding-top:5px;">';
-  html+='<div class="usage-override-label">Starting balance <span style="color:var(--text3);font-size:9px">(prior spend)</span></div>';
-  html+='<input class="usage-override-input" id="actual-input" type="text" placeholder="$0.00" value="'+(actualCost!==null?'$'+actualCost.toFixed(2):'')+'" />';
-  html+='<button class="usage-save-btn" onclick="saveUsageOverride(\'actual\',document.getElementById(\'actual-input\').value.replace(\'$\',\'\'))">Save</button>';
-  html+='</div>';
+  if(isMobile){
+    // Mobile: show all 4 in a tighter 4-col grid
+    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px;">';
+    html+='<div class="usage-metric" style="padding:5px 4px;text-align:center;"><div class="usage-metric-label" style="font-size:8px;">In</div><div class="usage-metric-val" style="font-size:11px;">'+totalIn.toLocaleString()+'</div></div>';
+    html+='<div class="usage-metric" style="padding:5px 4px;text-align:center;"><div class="usage-metric-label" style="font-size:8px;">Out</div><div class="usage-metric-val purple" style="font-size:11px;">'+totalOut.toLocaleString()+'</div></div>';
+    html+='<div class="usage-metric" style="padding:5px 4px;text-align:center;"><div class="usage-metric-label" style="font-size:8px;">Runs</div><div class="usage-metric-val gold" style="font-size:11px;">'+totalRuns+'</div></div>';
+    html+='<div class="usage-metric" style="padding:5px 4px;text-align:center;"><div class="usage-metric-label" style="font-size:8px;">Avg</div><div class="usage-metric-val" style="font-size:11px;">$'+avgCost+'</div></div>';
+    html+='</div>';
+  } else {
+    html+='<div class="usage-metrics" style="gap:5px;margin-top:8px;">';
+    html+='<div class="usage-metric" style="padding:6px 8px;"><div class="usage-metric-label">Input</div><div class="usage-metric-val" style="font-size:13px;">'+totalIn.toLocaleString()+'</div></div>';
+    html+='<div class="usage-metric" style="padding:6px 8px;"><div class="usage-metric-label">Output</div><div class="usage-metric-val purple" style="font-size:13px;">'+totalOut.toLocaleString()+'</div></div>';
+    html+='<div class="usage-metric" style="padding:6px 8px;"><div class="usage-metric-label">Runs</div><div class="usage-metric-val gold" style="font-size:13px;">'+totalRuns+'</div></div>';
+    html+='<div class="usage-metric" style="padding:6px 8px;"><div class="usage-metric-label">Avg</div><div class="usage-metric-val" style="font-size:13px;">$'+avgCost+'</div></div>';
+    html+='</div>';
+  }
+  if(isMobile){
+    // Mobile: compact two-column grid for overrides
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">';
+    html+='<div>';
+    html+='<div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--text3);margin-bottom:3px;">Budget</div>';
+    html+='<div style="display:flex;gap:4px;"><input class="usage-override-input" id="budget-input" type="text" value="$'+budget.toFixed(2)+'" style="width:100%;font-size:11px;padding:4px 6px;" /><button class="usage-save-btn" onclick="saveUsageOverride(\'budget\',document.getElementById(\'budget-input\').value.replace(\'$\',\'\'))" style="padding:4px 8px;">✓</button></div>';
+    html+='</div>';
+    html+='<div>';
+    html+='<div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--text3);margin-bottom:3px;">Starting balance</div>';
+    html+='<div style="display:flex;gap:4px;"><input class="usage-override-input" id="actual-input" type="text" placeholder="$0.00" value="'+(actualCost!==null?'$'+actualCost.toFixed(2):'')+'\" style="width:100%;font-size:11px;padding:4px 6px;" /><button class="usage-save-btn" onclick="saveUsageOverride(\'actual\',document.getElementById(\'actual-input\').value.replace(\'$\',\'\'))" style="padding:4px 8px;">✓</button></div>';
+    html+='</div>';
+    html+='</div>';
+  } else {
+    html+='<div class="usage-override-row" style="margin-top:8px;padding-top:8px;">';
+    html+='<div class="usage-override-label">Budget</div>';
+    html+='<input class="usage-override-input" id="budget-input" type="text" value="$'+budget.toFixed(2)+'" placeholder="$10.00" />';
+    html+='<button class="usage-save-btn" onclick="saveUsageOverride(\'budget\',document.getElementById(\'budget-input\').value.replace(\'$\',\'\'))">Save</button>';
+    html+='</div>';
+    html+='<div class="usage-override-row" style="margin-top:5px;padding-top:5px;">';
+    html+='<div class="usage-override-label">Starting balance <span style="color:var(--text3);font-size:9px">(prior spend)</span></div>';
+    html+='<input class="usage-override-input" id="actual-input" type="text" placeholder="$0.00" value="'+(actualCost!==null?'$'+actualCost.toFixed(2):'')+'" />';
+    html+='<button class="usage-save-btn" onclick="saveUsageOverride(\'actual\',document.getElementById(\'actual-input\').value.replace(\'$\',\'\'))">Save</button>';
+    html+='</div>';
+  }
   const totalRuns2=s&&s.entries?s.entries.length:0;
   html+='<div style="margin-top:10px;">';
   html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
