@@ -590,11 +590,9 @@ function closeUsageHistory(){
   function onResize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
   onResize();window.addEventListener('resize',onResize);
   const LAYERS=[
-    {cols:130,rows:65,spread:58,depth:30,yOff:-4,hS:5.5,spd:0.40,cA:0x9333ea,cB:0xfbcffe},
-    {cols:110,rows:55,spread:50,depth:26,yOff:-1,hS:4.5,spd:0.30,cA:0xa855f7,cB:0xf0abfc},
-    {cols:90,rows:45,spread:42,depth:22,yOff:2,hS:3.6,spd:0.22,cA:0xb975ff,cB:0xe0aaff},
-    {cols:70,rows:35,spread:34,depth:18,yOff:4,hS:2.8,spd:0.15,cA:0xc084fc,cB:0xfae8ff},
-  ];
+  {cols:100,rows:50,spread:50,depth:26,yOff:-4,hS:4.5,spd:0.40,cA:0x9333ea,cB:0xfbcffe},
+  {cols:80,rows:40,spread:42,depth:22,yOff:2,hS:3.6,spd:0.22,cA:0xb975ff,cB:0xe0aaff},
+];
   const waves=LAYERS.map(L=>{
     const count=L.cols*L.rows;
     const pos=new Float32Array(count*3);
@@ -615,7 +613,7 @@ function closeUsageHistory(){
     geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
     geo.setAttribute('color',new THREE.BufferAttribute(col,3));
     const mat=new THREE.PointsMaterial({
-      size:LAYERS.indexOf(L)===0?0.36:LAYERS.indexOf(L)===1?0.28:0.22,
+      size:0.28,
       vertexColors:true,transparent:true,opacity:1.0,sizeAttenuation:true
     });
     const pts=new THREE.Points(geo,mat);
