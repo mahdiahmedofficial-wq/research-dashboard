@@ -45,7 +45,7 @@ body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
 @keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 6px var(--pursue);}50%{opacity:0.4;box-shadow:0 0 14px var(--pursue);}}
 .layout{display:grid;grid-template-columns:272px 1fr;flex:1;min-height:0;}
 .sidebar{border-right:1px solid var(--border);background:rgba(6,7,13,0.8);
-  backdrop-filter:blur(20px);overflow-y:auto;padding:12px 10px;
+  backdrop-filter:none;overflow-y:auto;padding:12px 10px;
   display:flex;flex-direction:column;gap:4px;position:relative;}
 .sidebar::before{content:'';position:absolute;top:0;right:0;width:1px;height:100%;
   background:linear-gradient(180deg,var(--purple-dim),transparent 40%,var(--gold-dim) 100%);opacity:0.3;}
@@ -76,7 +76,7 @@ body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
   border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold);}
 .progress-fill.nogo{background:linear-gradient(90deg,var(--nogo-bd),var(--nogo));}
 .progress-fill.nogo::after{background:var(--nogo);box-shadow:0 0 6px var(--nogo);}
-.main{display:flex;flex-direction:column;background:rgba(6,7,13,0.68);backdrop-filter:blur(14px);
+.main{display:flex;flex-direction:column;background:rgba(6,7,13,0.55);backdrop-filter:none;
   overflow:hidden;min-height:0;}
 .main-empty{flex:1;display:flex;flex-direction:column;align-items:center;
   justify-content:center;color:var(--text3);gap:10px;}
