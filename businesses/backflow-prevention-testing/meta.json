@@ -17,13 +17,6 @@
   },
   "usage": [
     {
-      "report": "customer-acquisition",
-      "date": "2026-03-17",
-      "input_tokens": 4811,
-      "output_tokens": 4642,
-      "cost_usd": 0.0841
-    },
-    {
       "report": "challenger-sale",
       "date": "2026-03-17",
       "input_tokens": 15898,
@@ -36,6 +29,13 @@
       "input_tokens": 14651,
       "output_tokens": 8192,
       "cost_usd": 0.1668
+    },
+    {
+      "report": "customer-acquisition",
+      "date": "2026-03-17",
+      "input_tokens": 13672,
+      "output_tokens": 7425,
+      "cost_usd": 0.1524
     }
   ]
 }
