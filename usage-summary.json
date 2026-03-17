@@ -1,18 +1,9 @@
 {
-  "totalCost": 0.3588,
-  "totalInputTokens": 35360,
-  "totalOutputTokens": 16847,
+  "totalCost": 0.4271,
+  "totalInputTokens": 44221,
+  "totalOutputTokens": 19630,
   "totalRuns": 3,
   "entries": [
-    {
-      "bizId": "backflow-prevention-testing",
-      "bizName": "Backflow Prevention Testing",
-      "report": "customer-acquisition",
-      "date": "2026-03-17",
-      "input_tokens": 4811,
-      "output_tokens": 4642,
-      "cost_usd": 0.0841
-    },
     {
       "bizId": "backflow-prevention-testing",
       "bizName": "Backflow Prevention Testing",
@@ -30,6 +21,15 @@
       "input_tokens": 14651,
       "output_tokens": 8192,
       "cost_usd": 0.1668
+    },
+    {
+      "bizId": "backflow-prevention-testing",
+      "bizName": "Backflow Prevention Testing",
+      "report": "customer-acquisition",
+      "date": "2026-03-17",
+      "input_tokens": 13672,
+      "output_tokens": 7425,
+      "cost_usd": 0.1524
     }
   ],
   "overrides": {
@@ -39,5 +39,5 @@
       "updatedAt": "2026-03-17T06:14:12.396Z"
     }
   },
-  "lastUpdated": "2026-03-17T22:39:30.049Z"
+  "lastUpdated": "2026-03-17T23:11:08.969Z"
 }
