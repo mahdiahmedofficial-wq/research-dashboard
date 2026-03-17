@@ -585,12 +585,12 @@ function closeUsageHistory(){
   renderer.setClearColor(0x08091a,1);
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,300);
-  camera.position.set(0,18,38);camera.lookAt(0,0,0);
+  camera.position.set(0,18,48);camera.lookAt(0,0,0);
   function onResize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
   onResize();window.addEventListener('resize',onResize);
-  const LAYERS=[
-  {cols:140,rows:70,spread:80,depth:40,yOff:-4,hS:4.5,spd:0.40,cA:0x9333ea,cB:0xfbcffe},
-  {cols:120,rows:60,spread:70,depth:34,yOff:2,hS:3.6,spd:0.22,cA:0xb975ff,cB:0xe0aaff},
+ const LAYERS=[
+  {cols:140,rows:70,spread:120,depth:40,yOff:-4,hS:4.5,spd:0.40,cA:0x9333ea,cB:0xfbcffe},
+  {cols:120,rows:60,spread:100,depth:34,yOff:2,hS:3.6,spd:0.22,cA:0xb975ff,cB:0xe0aaff},
 ];
   const waves=LAYERS.map(L=>{
     const count=L.cols*L.rows;
