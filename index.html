@@ -442,10 +442,20 @@ body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
   .biz-header-top{flex-direction:column;gap:8px;}
   .stat-num{font-size:22px;}.stat-cell{padding:12px 8px;}
   .open-btn{padding:5px 10px;font-size:8px;}
-  .homepage{padding:16px;gap:16px;}
-  .hp-grid{grid-template-columns:1fr;}
-  .main{overflow-y:auto;-webkit-overflow-scrolling:touch;}
-  .usage-metrics{grid-template-columns:1fr 1fr;}
+  .main{overflow:hidden;display:flex;flex-direction:column;}
+  .homepage{padding:10px 12px;gap:8px;overflow-y:auto !important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;flex:1;}
+  .hp-grid{grid-template-columns:1fr;gap:8px;}
+  .hp-stats{gap:6px;}
+  .hp-stat{padding:8px 4px;}
+  .hp-stat-num{font-size:18px;}
+  .hp-opportunity-card{padding:14px 16px;min-height:0;}
+  .hp-opp-label{font-size:24px;margin-bottom:2px;}
+  .hp-opp-content{gap:4px;}
+  .hp-opp-desc{font-size:10px;margin-bottom:10px;letter-spacing:0.02em;}
+  .hp-opp-run{padding:8px 22px;font-size:10px;}
+  .hp-usage-card{padding:12px 14px;}
+  .usage-metrics{grid-template-columns:repeat(4,1fr);gap:4px;}
+  .usage-log{display:none !important;}
 }
 </style>
 </head>
