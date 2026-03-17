@@ -29,6 +29,13 @@
       "input_tokens": 15898,
       "output_tokens": 4013,
       "cost_usd": 0.1079
+    },
+    {
+      "report": "hormozi-sales",
+      "date": "2026-03-17",
+      "input_tokens": 14651,
+      "output_tokens": 8192,
+      "cost_usd": 0.1668
     }
   ]
 }
