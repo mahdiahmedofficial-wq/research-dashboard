@@ -589,9 +589,9 @@ function closeUsageHistory(){
   function onResize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
   onResize();window.addEventListener('resize',onResize);
   const LAYERS=[
-    {cols:100,rows:50,spread:50,depth:26,yOff:-4,hS:4.5,spd:0.40,cA:0x9333ea,cB:0xfbcffe},
-    {cols:80,rows:40,spread:42,depth:22,yOff:2,hS:3.6,spd:0.22,cA:0xb975ff,cB:0xe0aaff},
-  ];
+  {cols:140,rows:70,spread:80,depth:40,yOff:-4,hS:4.5,spd:0.40,cA:0x9333ea,cB:0xfbcffe},
+  {cols:120,rows:60,spread:70,depth:34,yOff:2,hS:3.6,spd:0.22,cA:0xb975ff,cB:0xe0aaff},
+];
   const waves=LAYERS.map(L=>{
     const count=L.cols*L.rows;
     const pos=new Float32Array(count*3);
