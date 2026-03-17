@@ -550,6 +550,18 @@ function closeUsageHistory(){
   .hp-greeting{font-size:16px;}
   .hp-sub{display:none;}
 }
+  /* prereq warning dot */
+.prereq-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 6px rgba(245,200,66,0.6);flex-shrink:0;animation:pulse-dot 2s infinite;}
+.launch-btn-blocked{font-family:'Space Mono',monospace;font-size:8px;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);padding:5px 11px;
+  border:1px solid var(--gold-bd);border-radius:6px;white-space:nowrap;flex-shrink:0;
+  background:var(--gold-bg);cursor:pointer;transition:all 0.15s;display:inline-block;}
+.launch-btn-blocked:hover{background:rgba(245,200,66,0.18);box-shadow:0 0 12px var(--gold-glow);}
+.prereq-section{padding:14px 18px 0;flex-shrink:0;}
+.prereq-section-title{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.prereq-section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent);}
 </style>
 </head>
 <body>
@@ -771,7 +783,64 @@ const SKILL_LABELS={
   'free-tool-strategy':'Free Tool Strategy','referral-program':'Referral Program',
   'marketing-ideas':'Marketing Ideas','revops':'RevOps','churn-prevention':'Churn Prevention',
 };
-
+/* ── CONTEXT MAP ── */
+const CONTEXT_MAP={
+  'research':[],'ci':[],'customer-research':['ci'],
+  'hormozi-intel':['ci','customer-research'],
+  'hormozi-sales':['ci','customer-research','hormozi-intel'],
+  'customer-acquisition':['ci','customer-research'],
+  'challenger-sale':['hormozi-sales','customer-acquisition'],
+  'product-marketing-context':['ci','customer-research','hormozi-intel'],
+  'pricing-strategy':['product-marketing-context'],
+  'site-architecture':['product-marketing-context'],
+  'website-builder':['product-marketing-context','site-architecture'],
+  'copywriting':['product-marketing-context','website-builder'],
+  'competitor-alternatives':['product-marketing-context','ci'],
+  'schema-markup':['website-builder','copywriting','competitor-alternatives'],
+  'seo-audit':['website-builder'],'ai-seo':['seo-audit'],
+  'programmatic-seo':['seo-audit','product-marketing-context'],
+  'page-cro':['product-marketing-context','website-builder'],
+  'popup-cro':['product-marketing-context'],'form-cro':['product-marketing-context'],
+  'signup-flow-cro':['product-marketing-context'],'onboarding-cro':['product-marketing-context'],
+  'email-sequence':['product-marketing-context','hormozi-intel'],
+  'marketing-psychology-audit':['page-cro','popup-cro','form-cro','signup-flow-cro','onboarding-cro','email-sequence'],
+  'launch-strategy':['product-marketing-context','hormozi-intel'],
+  'ad-creative':['product-marketing-context','customer-research'],
+  'paid-ads':['ad-creative'],'cold-email':['product-marketing-context','customer-research'],
+  'social-content':['product-marketing-context'],
+  'analytics-tracking':['website-builder','launch-strategy'],
+  'ab-test-setup':['analytics-tracking'],
+  'free-tool-strategy':['product-marketing-context','customer-research'],
+  'referral-program':['product-marketing-context'],
+  'marketing-ideas':['product-marketing-context','hormozi-intel','customer-research','ci'],
+  'revops':['product-marketing-context','hormozi-intel'],
+  'churn-prevention':['customer-research'],
+};
+function prereqsMet(bizFiles,skillKey){
+  return (CONTEXT_MAP[skillKey]||[]).every(dep=>bizFiles&&bizFiles[dep]);
+}
+function getMissingPrereqs(bizFiles,skillKey){
+  return (CONTEXT_MAP[skillKey]||[]).filter(dep=>!bizFiles||!bizFiles[dep]);
+}
+function buildPrereqHtml(bizFiles,skillKey,isSales){
+  const deps=CONTEXT_MAP[skillKey]||[];
+  if(!deps.length) return '<div style="font-family:\'Space Mono\',monospace;font-size:9px;color:var(--text3);padding:8px 0 4px;">No prerequisites — runs standalone.</div>';
+  const rows=deps.map(dep=>{
+    const met=!!(bizFiles&&bizFiles[dep]);
+    const label=SKILL_LABELS[dep]||dep;
+    const icon=met?'✓':'✗';
+    const color=met?'var(--pursue)':'var(--nogo)';
+    const bg=met?'var(--pursue-bg)':'var(--nogo-bg)';
+    const bd=met?'var(--pursue-bd)':'var(--nogo-bd)';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;background:'+bg+';border:1px solid '+bd+';margin-bottom:5px;">'+
+      '<span style="font-size:13px;color:'+color+';font-weight:700;flex-shrink:0;">'+icon+'</span>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:12px;font-weight:600;color:var(--text);">'+label+'</div>'+
+        '<div style="font-family:\'Space Mono\',monospace;font-size:9px;color:'+(met?'var(--text3)':'var(--nogo)')+';margin-top:1px;">'+(met?'Available · used as context':'Missing · run this first')+'</div>'+
+      '</div></div>';
+  }).join('');
+  return '<div style="margin-top:4px;">'+rows+'</div>';
+}
 /* ── USAGE HELPERS ── */
 async function loadUsageSummary(){
   try{
@@ -1173,9 +1242,17 @@ function renderPhaseContent(b){
     btn.className='launch-btn';
     btn.textContent='Run via API';
     btn.onclick=function(){runSkill(b.id,report.key,report.name,phaseTitle);};
+    const missing=getMissingPrereqs(b.files,report.key);
+    const hasMissing=missing.length>0;
+    const prereqDot=hasMissing?'<div class="prereq-dot" title="Missing prerequisites: '+missing.map(k=>SKILL_LABELS[k]||k).join(', ')+'"></div>':'';
+    if(hasMissing){
+      btn.className='launch-btn-blocked';
+      btn.textContent='Missing Prereqs \u2192';
+      btn.onclick=function(){showPrereqPanel(b,report.key,report.name,phaseTitle,tab.isSales);};
+    }
     launchDiv.innerHTML=
       '<div class="report-num">'+num+'</div>'+
-      '<div class="report-status"></div>'+
+      '<div class="report-status">'+prereqDot+'</div>'+
       '<div class="report-info"><div class="report-name">'+report.name+'</div><div class="report-desc">'+report.desc+'</div></div>';
     launchDiv.appendChild(btn);
     return launchDiv.outerHTML;
@@ -1209,7 +1286,47 @@ function renderPhaseContent(b){
     phaseBtnEl.onclick=function(){runPhaseViaAPI(b.id,missingKeys,phaseTitle);};
   }
 }
-
+/* ── PREREQ PANEL ── */
+function showPrereqPanel(b,skillKey,reportName,phaseTitle,isSales){
+  const prereqHtml=buildPrereqHtml(b.files,skillKey,isSales);
+  const allMet=prereqsMet(b.files,skillKey);
+  document.getElementById('review-title').textContent='Prerequisites — '+reportName;
+  const saveBtn=document.getElementById('review-save-btn');
+  const chat=document.getElementById('rv-chat');
+  const rvLoading=document.getElementById('rv-loading');
+  const rvEditor=document.getElementById('rv-editor');
+  const rvPreview=document.getElementById('rv-preview');
+  const rvError=document.getElementById('rv-error');
+  rvLoading.style.display='none';
+  rvEditor.style.display='none';
+  rvPreview.style.display='none';
+  rvError.style.display='none';
+  chat.style.display='none';
+  saveBtn.style.display='none';
+  document.getElementById('rv-btn-edit').style.display='none';
+  document.getElementById('rv-btn-preview').style.display='none';
+  const body=document.getElementById('review-body');
+  body.innerHTML=
+    '<div style="padding:20px 24px;overflow-y:auto;flex:1;">'+
+      '<div style="font-family:\'Space Mono\',monospace;font-size:10px;color:var(--text3);letter-spacing:0.08em;margin-bottom:14px;">'+
+        'These reports must be generated before <strong style="color:var(--text);">'+reportName+'</strong> can run. Each one feeds context into this report.'+
+      '</div>'+
+      prereqHtml+
+      (allMet?
+        '<button onclick="closePrereqAndRun(\''+b.id+'\',\''+skillKey+'\',\''+reportName+'\',\''+phaseTitle+'\')" style="margin-top:16px;width:100%;font-family:\'Space Mono\',monospace;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--pursue);padding:10px;border:1px solid var(--pursue-bd);border-radius:8px;background:var(--pursue-bg);cursor:pointer;">All Prerequisites Met — Run Now ▶</button>'
+        :
+        '<div style="margin-top:16px;padding:12px 14px;border-radius:8px;background:var(--nogo-bg);border:1px solid var(--nogo-bd);font-family:\'Space Mono\',monospace;font-size:9px;color:var(--nogo);letter-spacing:0.06em;">Complete the missing reports above, then return here to run this report.</div>'
+      )+
+    '</div>';
+  document.getElementById('review-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closePrereqAndRun(bizId,skillKey,reportName,phaseTitle){
+  document.getElementById('rv-btn-edit').style.display='';
+  document.getElementById('rv-btn-preview').style.display='';
+  closeReviewPanel();
+  runSkill(bizId,skillKey,reportName,phaseTitle);
+}
 /* ── API CALLS ── */
 async function runSkill(bizId,skillKey,reportTitle,phaseLabel){
   logActivity('running',skillKey,businesses.find(b=>b.id===bizId)?.name||bizId,phaseLabel);
