@@ -581,18 +581,17 @@ function closeUsageHistory(){
 (function(){
   const canvas=document.getElementById('bg-canvas');
   const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
   renderer.setClearColor(0x08091a,1);
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,300);
-  camera.position.set(0,12,28);
-  camera.lookAt(0,0,0);
+  camera.position.set(0,18,38);camera.lookAt(0,0,0);
   function onResize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
   onResize();window.addEventListener('resize',onResize);
   const LAYERS=[
-  {cols:100,rows:50,spread:50,depth:26,yOff:-4,hS:4.5,spd:0.40,cA:0x9333ea,cB:0xfbcffe},
-  {cols:80,rows:40,spread:42,depth:22,yOff:2,hS:3.6,spd:0.22,cA:0xb975ff,cB:0xe0aaff},
-];
+    {cols:100,rows:50,spread:50,depth:26,yOff:-4,hS:4.5,spd:0.40,cA:0x9333ea,cB:0xfbcffe},
+    {cols:80,rows:40,spread:42,depth:22,yOff:2,hS:3.6,spd:0.22,cA:0xb975ff,cB:0xe0aaff},
+  ];
   const waves=LAYERS.map(L=>{
     const count=L.cols*L.rows;
     const pos=new Float32Array(count*3);
@@ -601,63 +600,38 @@ function closeUsageHistory(){
     const cA=new THREE.Color(L.cA),cB=new THREE.Color(L.cB);
     let i=0;
     for(let r=0;r<L.rows;r++){for(let c=0;c<L.cols;c++){
-      const x=(c/(L.cols-1)-0.5)*L.spread;
-      const z=(r/(L.rows-1)-0.5)*L.depth;
+      const x=(c/(L.cols-1)-0.5)*L.spread;const z=(r/(L.rows-1)-0.5)*L.depth;
       pos[i*3]=x;pos[i*3+1]=L.yOff;pos[i*3+2]=z;baseY[i]=L.yOff;
-      const t=r/(L.rows-1);
-      const mix=cA.clone().lerp(cB,t*0.5+0.3);
-      col[i*3]=mix.r;col[i*3+1]=mix.g;col[i*3+2]=mix.b;
-      i++;
+      const t=r/(L.rows-1);const mix=cA.clone().lerp(cB,t*0.5+0.3);
+      col[i*3]=mix.r;col[i*3+1]=mix.g;col[i*3+2]=mix.b;i++;
     }}
     const geo=new THREE.BufferGeometry();
     geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
     geo.setAttribute('color',new THREE.BufferAttribute(col,3));
-    const mat=new THREE.PointsMaterial({
-      size:0.28,
-      vertexColors:true,transparent:true,opacity:1.0,sizeAttenuation:true
-    });
-    const pts=new THREE.Points(geo,mat);
-    scene.add(pts);
+    const mat=new THREE.PointsMaterial({size:0.28,vertexColors:true,transparent:true,opacity:0.9,sizeAttenuation:true});
+    const pts=new THREE.Points(geo,mat);scene.add(pts);
     return{pts,geo,pos,col,baseY,L};
   });
-  scene.fog=new THREE.FogExp2(0x08091a,0.000);
-  let mx=0,my=0,tmx=0,tmy=0;
-  document.addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-0.5);my=(e.clientY/innerHeight-0.5);});
+  scene.fog=new THREE.FogExp2(0x08091a,0.006);
   let t=0;
-  const cPeak=new THREE.Color(0xfff7a0);
-  const cCrest=new THREE.Color(0xfcd34d);
+  const cPeak=new THREE.Color(0xfff7a0),cCrest=new THREE.Color(0xfcd34d);
   function animate(){
     requestAnimationFrame(animate);t+=0.011;
-    tmx+=(mx-tmx)*0.04;tmy+=(my-tmy)*0.04;
-    camera.position.x+=(tmx*6-camera.position.x)*0.03;
-    camera.position.y+=(-tmy*3+18-camera.position.y)*0.03;
-    camera.lookAt(0,2,0);
     waves.forEach(({geo,pos,col,baseY,L})=>{
-      const p=geo.attributes.position.array;
-      let i=0;
+      const p=geo.attributes.position.array;let i=0;
       for(let r=0;r<L.rows;r++){for(let c=0;c<L.cols;c++){
         const x=pos[i*3],z=pos[i*3+2];
-        p[i*3+1]=baseY[i]+
-          Math.sin(x*0.20+t*L.spd*2.2)*L.hS*0.55+
-          Math.sin(z*0.24+t*L.spd*1.8)*L.hS*0.45+
-          Math.sin((x+z)*0.13+t*L.spd*1.4)*L.hS*0.38+
-          Math.sin(x*0.38-z*0.16+t*L.spd*3.0)*L.hS*0.22+
-          Math.sin(x*0.09+z*0.07+t*L.spd*1.0)*L.hS*0.65;
-        i++;
+        p[i*3+1]=baseY[i]+Math.sin(x*0.20+t*L.spd*2.2)*L.hS*0.55+Math.sin(z*0.24+t*L.spd*1.8)*L.hS*0.45+Math.sin((x+z)*0.13+t*L.spd*1.4)*L.hS*0.38+Math.sin(x*0.09+z*0.07+t*L.spd*1.0)*L.hS*0.65;i++;
       }}
       geo.attributes.position.needsUpdate=true;
-      const cl=geo.attributes.color.array;
-      const cA=new THREE.Color(L.cA),cB=new THREE.Color(L.cB);
-      i=0;
+      const cl=geo.attributes.color.array;const cA=new THREE.Color(L.cA),cB=new THREE.Color(L.cB);i=0;
       for(let r=0;r<L.rows;r++){for(let c=0;c<L.cols;c++){
-        const h=p[i*3+1];
-        const n=Math.max(0,Math.min(1,(h-baseY[i]+L.hS)/(L.hS*2)));
+        const h=p[i*3+1];const n=Math.max(0,Math.min(1,(h-baseY[i]+L.hS)/(L.hS*2)));
         let mc;
-        if(n>0.82) mc=cPeak.clone().lerp(cCrest,(n-0.82)/0.18);
-        else if(n>0.55) mc=cB.clone().lerp(cPeak,(n-0.55)/0.27);
+        if(n>0.82)mc=cPeak.clone().lerp(cCrest,(n-0.82)/0.18);
+        else if(n>0.55)mc=cB.clone().lerp(cPeak,(n-0.55)/0.27);
         else mc=cA.clone().lerp(cB,n/0.55);
-        cl[i*3]=mc.r;cl[i*3+1]=mc.g;cl[i*3+2]=mc.b;
-        i++;
+        cl[i*3]=mc.r;cl[i*3+1]=mc.g;cl[i*3+2]=mc.b;i++;
       }}
       geo.attributes.color.needsUpdate=true;
     });
