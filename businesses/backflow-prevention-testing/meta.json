@@ -22,6 +22,13 @@
       "input_tokens": 4811,
       "output_tokens": 4642,
       "cost_usd": 0.0841
+    },
+    {
+      "report": "challenger-sale",
+      "date": "2026-03-17",
+      "input_tokens": 15898,
+      "output_tokens": 4013,
+      "cost_usd": 0.1079
     }
   ]
 }
