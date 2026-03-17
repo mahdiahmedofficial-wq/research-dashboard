@@ -862,7 +862,7 @@ function renderUsageCard(){
   const actualCost=overrides.actualCost||null;
   const estimatedCost=s?s.totalCost:0;
   const displayCost=actualCost!==null?actualCost:estimatedCost;
-  const pct=budget>0?Math.min(100,Math.round(displayCost/budget*100)):0;
+  const pct=budget>0?Math.min(100,Math.round(estimatedCost/budget*100)):0;
   const barClass=pct>=90?'danger':pct>=70?'warn':'';
   const totalIn=s?s.totalInputTokens:0;
   const totalOut=s?s.totalOutputTokens:0;
@@ -892,8 +892,8 @@ function renderUsageCard(){
   let html='<div class="hp-usage-card">';
   html+='<div class="hp-card-title">API Usage</div>';
   html+='<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:4px;">';
-  html+='<div style="font-family:\'Space Mono\',monospace;font-size:24px;font-weight:700;color:var(--gold)">$'+displayCost.toFixed(2)+'</div>';
-  html+='<div style="font-family:\'Space Mono\',monospace;font-size:10px;color:var(--text3)">'+(isVerified?'<span class="usage-verified">\u2713 verified</span>':'estimated')+'</div>';
+  html+='<div style="font-family:\'Space Mono\',monospace;font-size:24px;font-weight:700;color:var(--gold)">$'+estimatedCost.toFixed(2)+'</div>';
+  html+='<div style="font-family:\'Space Mono\',monospace;font-size:10px;color:var(--text3)">'+(isVerified?'<span class="usage-verified">\u2713 verified · $'+actualCost.toFixed(2)+' actual</span>':'estimated')+'</div>';
   html+='</div>';
   html+='<div class="usage-bar-track" style="margin:4px 0 3px;"><div class="usage-bar-fill '+barClass+'" style="width:'+pct+'%"></div></div>';
   html+='<div class="usage-bar-labels"><span>$0</span><span>'+pct+'% of $'+budget.toFixed(2)+' budget</span></div>';
