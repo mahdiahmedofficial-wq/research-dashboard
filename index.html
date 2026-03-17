@@ -1248,7 +1248,7 @@ function renderPhaseContent(b){
     if(hasMissing){
       btn.className='launch-btn-blocked';
       btn.textContent='Missing Prereqs \u2192';
-      btn.onclick=function(){showPrereqPanel(b,report.key,report.name,phaseTitle,tab.isSales);};
+      btn.onclick=function(e){e.stopPropagation();showPrereqPanel(b,report.key,report.name,phaseTitle,tab.isSales);};
     }
     launchDiv.innerHTML=
       '<div class="report-num">'+num+'</div>'+
@@ -1288,6 +1288,7 @@ function renderPhaseContent(b){
 }
 /* ── PREREQ PANEL ── */
 function showPrereqPanel(b,skillKey,reportName,phaseTitle,isSales){
+  if(typeof b==='string') b=businesses.find(x=>x.id===b)||{id:b,files:{}};
   const prereqHtml=buildPrereqHtml(b.files,skillKey,isSales);
   const allMet=prereqsMet(b.files,skillKey);
   document.getElementById('review-title').textContent='Prerequisites — '+reportName;
