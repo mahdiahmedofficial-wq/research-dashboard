@@ -585,7 +585,7 @@ function closeUsageHistory(){
   renderer.setClearColor(0x08091a,1);
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,300);
-  camera.position.set(0,22,52);
+  camera.position.set(0,12,28);
   camera.lookAt(0,0,0);
   function onResize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
   onResize();window.addEventListener('resize',onResize);
@@ -620,7 +620,7 @@ function closeUsageHistory(){
     scene.add(pts);
     return{pts,geo,pos,col,baseY,L};
   });
-  scene.fog=new THREE.FogExp2(0x08091a,0.003);
+  scene.fog=new THREE.FogExp2(0x08091a,0.000);
   let mx=0,my=0,tmx=0,tmy=0;
   document.addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-0.5);my=(e.clientY/innerHeight-0.5);});
   let t=0;
