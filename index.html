@@ -706,30 +706,30 @@ const BUSINESSES=['fire-pump-flow-testing','aerial-lift-inspection','backflow-pr
 const BACKEND_URL='https://research-hub-backend-production.up.railway.app';
 
 const TABS=[
-  {id:'research',label:'Research',sublabel:null,isSales:false,reports:[
+  {id:'research',label:'Research',phase:'Phase 1',sublabel:null,isSales:false,reports:[
     {key:'research',name:'Business Research Report',desc:'Market overview · pricing · licensing · Go/No-Go verdict'}]},
-  {id:'phase2',label:'Phase 2',sublabel:'Intelligence',isSales:false,reports:[
+  {id:'phase2',label:'Intelligence',phase:'Phase 2',sublabel:'Intelligence',isSales:false,reports:[
     {key:'ci',name:'Competitor Intelligence',desc:'Named competitors · ads · pricing · weaknesses'},
     {key:'customer-research',name:'Customer Research',desc:'VOC · JTBD · personas · review mining'},
     {key:'hormozi-intel',name:'Hormozi Framework',desc:'$100M Offers · Leads · Money Models'}]},
-  {id:'sales',label:'Sales',sublabel:'Department',isSales:true,reports:[
+  {id:'sales',label:'Sales',phase:'Phase 3',sublabel:'Department',isSales:true,reports:[
     {key:'hormozi-sales',name:'Hormozi Framework Analysis',desc:'Offer structure · lead gen · revenue model'},
     {key:'customer-acquisition',name:'Customer Acquisition Plan',desc:'Named prospects · scored leads · outreach cadence'},
     {key:'challenger-sale',name:'Challenger Sale Playbook',desc:'Tailored pitch · talk track · objection handling'}]},
-  {id:'phase3',label:'Phase 3',sublabel:'Foundation',isSales:false,reports:[
+  {id:'phase3',label:'Foundation',phase:'Phase 4',sublabel:'Foundation',isSales:false,reports:[
     {key:'product-marketing-context',name:'Product Marketing Context',desc:'ICP · positioning · messaging — master context file'},
     {key:'pricing-strategy',name:'Pricing Strategy',desc:'Tiers · value metric · packaging'},
     {key:'site-architecture',name:'Site Architecture',desc:'Page hierarchy · URL structure · navigation'}]},
-  {id:'phase4',label:'Phase 4',sublabel:'Build',isSales:false,reports:[
+  {id:'phase4',label:'Build',phase:'Phase 5',sublabel:'Build',isSales:false,reports:[
     {key:'website-builder',name:'Website Builder',desc:'Full multi-page site copy'},
     {key:'copywriting',name:'Copywriting + Copy Editing',desc:'Page copy refined and polished'},
     {key:'competitor-alternatives',name:'Competitor Alternatives',desc:'vs pages + alternative pages'},
     {key:'schema-markup',name:'Schema Markup',desc:'Structured data for rich snippets'}]},
-  {id:'phase5',label:'Phase 5',sublabel:'SEO',isSales:false,reports:[
+  {id:'phase5',label:'SEO',phase:'Phase 6',sublabel:'SEO',isSales:false,reports:[
     {key:'seo-audit',name:'SEO Audit',desc:'Technical SEO · on-page · indexing'},
     {key:'ai-seo',name:'AI SEO',desc:'LLM citation optimization'},
     {key:'programmatic-seo',name:'Programmatic SEO',desc:'Template pages scaled across keywords'}]},
-  {id:'phase6',label:'Phase 6',sublabel:'Convert',isSales:false,reports:[
+  {id:'phase6',label:'Convert',phase:'Phase 7',sublabel:'Convert',isSales:false,reports:[
     {key:'page-cro',name:'Page CRO',desc:'Homepage and landing page conversion'},
     {key:'popup-cro',name:'Popup CRO',desc:'Exit intent · lead capture overlays'},
     {key:'form-cro',name:'Form CRO',desc:'Lead and contact form optimization'},
@@ -737,16 +737,16 @@ const TABS=[
     {key:'onboarding-cro',name:'Onboarding CRO',desc:'Post-signup first-run experience'},
     {key:'email-sequence',name:'Email Sequence',desc:'Nurture + lifecycle flow'},
     {key:'marketing-psychology-audit',name:'Marketing Psychology Audit',desc:'Behavioral science audit — runs last'}]},
-  {id:'phase7',label:'Phase 7',sublabel:'Launch',isSales:false,reports:[
+  {id:'phase7',label:'Launch',phase:'Phase 8',sublabel:'Launch',isSales:false,reports:[
     {key:'launch-strategy',name:'Launch Strategy',desc:'GTM plan · Product Hunt · channels'},
     {key:'ad-creative',name:'Ad Creative',desc:'Headlines · copy variations across platforms'},
     {key:'paid-ads',name:'Paid Ads',desc:'Campaign strategy · targeting · bidding'},
     {key:'cold-email',name:'Cold Email',desc:'Outbound sequences and follow-up cadence'},
     {key:'social-content',name:'Social Content',desc:'LinkedIn · Twitter/X · Instagram plan'}]},
-  {id:'phase8',label:'Phase 8',sublabel:'Measure',isSales:false,reports:[
+  {id:'phase8',label:'Measure',phase:'Phase 9',sublabel:'Measure',isSales:false,reports:[
     {key:'analytics-tracking',name:'Analytics Tracking',desc:'GA4 · GTM · event tracking plan'},
     {key:'ab-test-setup',name:'A/B Test Setup',desc:'Experiment design · variants · metrics'}]},
-  {id:'phase9',label:'Phase 9',sublabel:'Retain',isSales:false,reports:[
+  {id:'phase9',label:'Retain',phase:'Phase 10',sublabel:'Retain',isSales:false,reports:[
     {key:'free-tool-strategy',name:'Free Tool Strategy',desc:'Engineering-as-marketing lead gen tools'},
     {key:'referral-program',name:'Referral Program',desc:'Word of mouth · affiliate · ambassador'},
     {key:'marketing-ideas',name:'Marketing Ideas',desc:'Growth ideas from all available context'},
@@ -1157,7 +1157,11 @@ function renderTabs(b){
   el.innerHTML=TABS.map(tab=>{
     const done=tabDoneCount(b,tab);
     const cls=['phase-tab',activeTab===tab.id?'active':'',!tabHasAny(b,tab)?'disabled':'',tab.isSales?'sales-tab':''].filter(Boolean).join(' ');
-    return '<div class="'+cls+'" onclick="selectTab(\''+tab.id+'\')">'+'<span>'+tab.label+'</span><span class="tab-count">'+done+'/'+tab.reports.length+'</span></div>';
+    return '<div class="'+cls+'" onclick="selectTab(\''+tab.id+'\')">'+
+      '<span style="font-size:9px;letter-spacing:0.08em;">'+tab.label+'</span>'+
+      '<span style="font-size:8px;opacity:0.6;letter-spacing:0.05em;">'+(tab.phase||'')+'</span>'+
+      '<span class="tab-count">'+done+'/'+tab.reports.length+'</span>'+
+    '</div>';
   }).join('');
 }
 
