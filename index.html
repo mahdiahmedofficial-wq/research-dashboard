@@ -848,6 +848,7 @@ async function saveUsageOverride(field,value){
 }
 
 function openUsageHistory(){
+  closeReviewPanel();
   const s=usageSummary;
   const entries=s&&s.entries?[...s.entries].reverse():[];
   const totalCost=s?s.totalCost:0;
@@ -912,9 +913,8 @@ function openUsageHistory(){
   document.getElementById('rv-btn-preview').style.display='none';
   const body=document.getElementById('review-body');
   body.innerHTML=panelContent;
-  document.getElementById('review-overlay').classList.remove('open');
-setTimeout(()=>{document.getElementById('review-overlay').classList.add('open');},10);
-document.body.style.overflow='hidden';
+  document.getElementById('review-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
 function closeUsageHistory(){
@@ -1272,6 +1272,7 @@ function renderPhaseContent(b){
 
 /* ── PREREQ / DEPS PANEL ── */
 function showPrereqPanel(b,skillKey,reportName,phaseTitle,isSales){
+  closeReviewPanel();
   if(typeof b==='string') b=businesses.find(x=>x.id===b)||{id:b,files:{}};
   const prereqHtml=buildPrereqHtml(b.files,skillKey,isSales);
   const allMet=prereqsMet(b.files,skillKey);
@@ -1302,9 +1303,8 @@ function showPrereqPanel(b,skillKey,reportName,phaseTitle,isSales){
           :'')
       )+
     '</div>';
-  document.getElementById('review-overlay').classList.remove('open');
-setTimeout(()=>{document.getElementById('review-overlay').classList.add('open');},10);
-document.body.style.overflow='hidden';
+  document.getElementById('review-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
 function closePrereqAndRun(bizId,skillKey,reportName,phaseTitle){
@@ -1546,9 +1546,8 @@ function openReviewPanel(title,content,saveData,loading,error){
       saveBtn.disabled=false;
     }
   }
-  document.getElementById('review-overlay').classList.remove('open');
-setTimeout(()=>{document.getElementById('review-overlay').classList.add('open');},10);
-document.body.style.overflow='hidden';
+  document.getElementById('review-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
 function setReviewMode(mode){
