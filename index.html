@@ -1250,12 +1250,18 @@ function renderPhaseContent(b){
       btn.textContent='Missing Prereqs \u2192';
       btn.onclick=function(e){e.stopPropagation();showPrereqPanel(b,report.key,report.name,phaseTitle,tab.isSales);};
     }
-    launchDiv.innerHTML=
+    const launchHtml='<div class="report-row no-file">'+
       '<div class="report-num">'+num+'</div>'+
       '<div class="report-status">'+prereqDot+'</div>'+
-      '<div class="report-info"><div class="report-name">'+report.name+'</div><div class="report-desc">'+report.desc+'</div></div>';
-    launchDiv.appendChild(btn);
-    return launchDiv.outerHTML;
+      '<div class="report-info"><div class="report-name">'+report.name+'</div><div class="report-desc">'+report.desc+'</div></div>'+
+      '<button class="'+btnClass+'" onclick="'+
+        (hasMissing
+          ? 'showPrereqPanel(businesses.find(function(x){return x.id===\''+b.id+'\'}),\''+report.key+'\',\''+report.name.replace(/'/g,"\\'")+'\',\''+phaseTitle.replace(/'/g,"\\'")+'\','+tab.isSales+')'
+          : 'runSkill(\''+b.id+'\',\''+report.key+'\',\''+report.name.replace(/'/g,"\\'")+'\',\''+phaseTitle.replace(/'/g,"\\'")+'\')'
+        )+
+      '">'+btnText+'</button>'+
+    '</div>';
+    return launchHtml;
   }).join('');
   el.innerHTML=
     '<div class="phase-content"><div class="phase-header">'+
@@ -1275,11 +1281,7 @@ function renderPhaseContent(b){
     const stag=row.querySelector('.status-tag');
     if(stag) stag.onclick=e=>{e.stopPropagation();cycleStatus(b.id,report.key,statusVal,e.target);};
   });
-  el.querySelectorAll('.launch-btn').forEach((btn,i)=>{
-    const missingReports=tab.reports.filter(r=>!b.files||!b.files[r.key]);
-    const report=missingReports[i];
-    if(report) btn.onclick=function(){runSkill(b.id,report.key,report.name,phaseTitle);};
-  });
+  
   const phaseBtnEl=el.querySelector('.run-phase-btn');
   if(phaseBtnEl){
     const missingKeys=missing.map(r=>r.key);
