@@ -1243,7 +1243,7 @@ function renderPhaseContent(b){
     const btnText=hasMissing?'Missing Prereqs \u2192':'Run via API';
     const btnAction=hasMissing
       ?'showPrereqPanel(businesses.find(function(x){return x.id===\''+b.id+'\'}),\''+report.key+'\',\''+report.name.replace(/'/g,"\\'")+'\',\''+phaseTitle.replace(/'/g,"\\'")+'\','+tab.isSales+')'
-      :'runSkill(\''+b.id+'\',\''+report.key+'\',\''+report.name.replace(/'/g,"\\'")+'\',\''+phaseTitle.replace(/'/g,"\\'")+'\')'
+      :'runSkill(\''+b.id+'\',\''+report.key+'\',\''+report.name.replace(/'/g,"\\'")+'\',\''+phaseTitle.replace(/'/g,"\\'")+'\')';
     return '<div class="report-row no-file">'+
       '<div class="report-num">'+num+'</div>'+
       '<div class="report-status">'+prereqDot+'</div>'+
