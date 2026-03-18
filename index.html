@@ -912,8 +912,9 @@ function openUsageHistory(){
   document.getElementById('rv-btn-preview').style.display='none';
   const body=document.getElementById('review-body');
   body.innerHTML=panelContent;
-  document.getElementById('review-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
+  document.getElementById('review-overlay').classList.remove('open');
+setTimeout(()=>{document.getElementById('review-overlay').classList.add('open');},10);
+document.body.style.overflow='hidden';
 }
 
 function closeUsageHistory(){
@@ -1301,8 +1302,9 @@ function showPrereqPanel(b,skillKey,reportName,phaseTitle,isSales){
           :'')
       )+
     '</div>';
-  document.getElementById('review-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
+  document.getElementById('review-overlay').classList.remove('open');
+setTimeout(()=>{document.getElementById('review-overlay').classList.add('open');},10);
+document.body.style.overflow='hidden';
 }
 
 function closePrereqAndRun(bizId,skillKey,reportName,phaseTitle){
@@ -1544,8 +1546,9 @@ function openReviewPanel(title,content,saveData,loading,error){
       saveBtn.disabled=false;
     }
   }
-  document.getElementById('review-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
+  document.getElementById('review-overlay').classList.remove('open');
+setTimeout(()=>{document.getElementById('review-overlay').classList.add('open');},10);
+document.body.style.overflow='hidden';
 }
 
 function setReviewMode(mode){
