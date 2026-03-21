@@ -520,23 +520,11 @@ async function runOpportunityFinder() {
     </div>`);
 
   try {
-    const res = await fetch(BACKEND_URL + '/run-skill', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        bizId: '__opportunity__',
-        skillKey: 'opportunity-finder',
-        userProfile: {
-          businessType: userProfile.businessType || '',
-          industry: userProfile.industry || '',
-          serviceModel: userProfile.serviceModel || '',
-          budget: userProfile.budget || '',
-          competition: userProfile.competition || '',
-          speed: userProfile.speed || '',
-          location: userProfile.location || 'Twin Cities, MN',
-        }
-      })
-    });
+   const res = await fetch(BACKEND_URL + '/run-opportunity-finder', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ profile: userProfile })
+});
 
     const data = await res.json();
     if (!data.ok) throw new Error(data.error);
